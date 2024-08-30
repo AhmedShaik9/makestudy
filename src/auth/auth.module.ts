@@ -13,7 +13,6 @@ import { RoleGuard } from '../guards/role.guard';
 import { MailerService } from './mail/mailer.service';
 import { OTP, OTPSchema } from '../models/auth/otp.schema';
 import { OtpGeneratorService } from './mail/otp-generator.service';
-import { RolesGuard } from '../guards/roles.guard';
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: Admin.name, schema: AdminSchema }]),
@@ -36,7 +35,6 @@ import { RolesGuard } from '../guards/roles.guard';
     RoleGuard,
     MailerService,
     OtpGeneratorService,
-    RolesGuard,
   ],
 })
 export class AuthModule {}
