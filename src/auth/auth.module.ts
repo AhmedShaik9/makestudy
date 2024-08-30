@@ -10,10 +10,15 @@ import { UserController } from './user/user.controller';
 import { UserService } from './user/user.service';
 import { User, UserSchema } from 'src/models/auth/user.schema';
 import { RoleGuard } from 'src/guards/role.guard';
+import { MailerService } from './mail/mailer.service';
+import { OTP, OTPSchema } from 'src/models/auth/otp.schema';
+import { OtpGeneratorService } from './mail/otp-generator.service';
+import { RolesGuard } from 'src/guards/roles.guard';
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: Admin.name, schema: AdminSchema }]),
     MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
+    MongooseModule.forFeature([{ name: OTP.name, schema: OTPSchema }]),
     JwtModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -24,6 +29,14 @@ import { RoleGuard } from 'src/guards/role.guard';
     }),
   ],
   controllers: [AdminauthController, UserController],
-  providers: [AdminauthService, JwtStrategy, UserService, RoleGuard],
+  providers: [
+    AdminauthService,
+    JwtStrategy,
+    UserService,
+    RoleGuard,
+    MailerService,
+    OtpGeneratorService,
+    RolesGuard,
+  ],
 })
 export class AuthModule {}

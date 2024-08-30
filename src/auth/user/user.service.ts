@@ -10,6 +10,10 @@ import { User } from 'src/models/auth/user.schema';
 import { CreateUserDto, LoginDto, UpdateUserDto } from 'src/dtos/user.dto';
 import * as crypto from 'crypto';
 import { JwtService } from '@nestjs/jwt';
+import { MailerService } from '../mail/mailer.service';
+import { OtpGeneratorService } from '../mail/otp-generator.service';
+import { OTP } from 'src/models/auth/otp.schema';
+import { Admin } from 'src/models/auth/admin.schema';
 @Injectable()
 export class UserService {
   private readonly saltRounds = 10;
@@ -18,16 +22,73 @@ export class UserService {
   constructor(
     @InjectModel(User.name) private readonly userModel: Model<User>,
     private jwtService: JwtService,
+    private mailerService: MailerService,
+    private otpGenerator: OtpGeneratorService,
+    @InjectModel(OTP.name) private readonly otpModel: Model<OTP>,
+    @InjectModel(Admin.name) private adminModel: Model<Admin>,
   ) {}
+  async initiateSignup(
+    createUserDto: CreateUserDto,
+  ): Promise<{ message: string }> {
+    const user = await this.userModel.findOne({ email: createUserDto.email });
+    if (user) {
+      return { message: 'User already exists' };
+    }
+    const otp = this.otpGenerator.generateOtp();
+    const subject = 'Welcome to Our Service!';
+    const text = `Dear ${createUserDto.first_name},\n\nWelcome to our service! Your OTP is ${otp}.`;
+    const html = `
+        <div style="font-family: Arial, sans-serif; line-height: 1.5;">
+          <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR8gFHJGUqaBqmeXxBpdpGkqCMefNxTkwaVOg&s" alt="Welcome Image" style="width: 100%; max-width: 600px;">
+          <h1>Welcome, ${createUserDto.first_name}!</h1>
+          <p>We are excited to have you on board. Below is your OTP for account access:</p>
+          <h2 style="color: #2E86C1;">${otp}</h2>
+          <p>Make sure to use this OTP within the next  1 minute.</p>
+          <p>Best Regards,<br/>The Team</p>
+        `;
 
-  async create(createUserDto: CreateUserDto): Promise<User> {
-    const { ...rest } = createUserDto;
-    const hashedPassword = this.hashPassword(createUserDto.password);
-    const createdUser = new this.userModel({
-      ...rest,
-      password: hashedPassword,
+    await this.otpModel.create({
+      otpCode: otp,
+      createdAt: new Date(),
+      userId: createUserDto.email,
+      isUsed: false,
     });
-    return createdUser.save();
+    await this.mailerService.sendWelcomeEmail(
+      createUserDto.email,
+      subject,
+      text,
+      html,
+    );
+
+    return { message: 'OTP sent successfully' };
+  }
+
+  async verifyOtpAndCreateUser(otpCode: string, createUserDto: CreateUserDto) {
+    console.log(createUserDto);
+    const otp = await this.otpModel.findOne({
+      otpCode,
+      userId: createUserDto.email,
+      isUsed: false,
+    });
+    // console.log(createUserDto);
+    if (!otp) {
+      throw new BadRequestException('Invalid or expired OTP');
+    }
+
+    // Mark OTP as used
+    otp.isUsed = true;
+    otp.validated = true;
+    await otp.save();
+
+    // Hash the password and save the user
+    // const hashedPassword = this.hashPassword(createUserDto.password);
+    const createdUser = new this.userModel({
+      ...createUserDto,
+      // password: hashedPassword,
+    });
+
+    await createdUser.save();
+    return { message: 'User created successfully' };
   }
   hashPassword(password: string): string {
     return crypto.createHash('md5').update(password).digest('hex');
@@ -59,6 +120,30 @@ export class UserService {
       throw new NotFoundException(`User with ID ${id} not found`);
     }
   }
+  async createPassword(email: string, password: string) {
+    // const user = await this.userModel.findOne({ email: email });
+    const user = await this.userModel.findOne({}).where({ email: email });
+    // console.log(email, password);
+    console.log(user);
+    // Check if user exists
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    const checkValidUser = await this.otpModel
+      .find()
+      .where({ userId: user.email });
+    console.log(checkValidUser);
+    if (checkValidUser.length > 0 && checkValidUser[0].validated) {
+      const hashedPassword = this.hashPassword(password);
+      await this.userModel
+        .findByIdAndUpdate(user.id, { password: hashedPassword })
+        .exec();
+      return { message: 'Password updated successfully' };
+    }
+
+    throw new BadRequestException('User not validated');
+  }
 
   async login(loginDto: LoginDto): Promise<any> {
     const { email, password } = loginDto;
@@ -71,12 +156,13 @@ export class UserService {
     if (!isMatch) {
       throw new BadRequestException('Invalid credentials');
     }
-    const payload = { email: user.email, sub: user._id };
+    const payload = { email: user.email, sub: user._id, role: user.usertype };
     const expirationDate = new Date();
     expirationDate.setMinutes(
       expirationDate.getMinutes() + this.accessTokenExpiresIn,
     );
     const expiresIn = expirationDate.toISOString();
+
     return {
       accessToken: this.jwtService.sign(payload),
       refreshToken: this.jwtService.sign(payload, { expiresIn: '1d' }),
@@ -89,5 +175,14 @@ export class UserService {
       .update(plainPassword)
       .digest('hex');
     return hashedPassword === hashedPlainPassword;
+  }
+  async validateOtp(userId: string, otpCode: string): Promise<boolean> {
+    const otp = await this.otpModel.findOne({ userId, otpCode, isUsed: false });
+    if (!otp) {
+      return false;
+    }
+    otp.isUsed = true;
+    await otp.save();
+    return true;
   }
 }

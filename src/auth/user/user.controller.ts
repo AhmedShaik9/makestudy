@@ -6,6 +6,7 @@ import {
   Param,
   Delete,
   Get,
+  BadRequestException,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto, LoginDto, UpdateUserDto } from 'src/dtos/user.dto';
@@ -18,11 +19,6 @@ export class UserController {
   async findAll(): Promise<User[]> {
     return this.userService.findAll();
   }
-  @Post('create')
-  async create(@Body() createUserDto: CreateUserDto): Promise<User> {
-    return this.userService.create(createUserDto);
-  }
-
   @Get(':id')
   async findById(@Param('id') id: string): Promise<User> {
     return this.userService.findById(id);
@@ -44,5 +40,35 @@ export class UserController {
   @Post('login')
   async login(@Body() loginDto: LoginDto): Promise<User> {
     return this.userService.login(loginDto);
+  }
+
+  @Post('register')
+  async initiateSignup(@Body() createUserDto: CreateUserDto) {
+    try {
+      return await this.userService.initiateSignup(createUserDto);
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
+  }
+
+  @Post('verify-otp')
+  async verifyOtpAndCreateUser(
+    @Body() body: { otpCode: string; createUserDto: CreateUserDto },
+  ) {
+    const { otpCode, createUserDto } = body;
+    try {
+      return await this.userService.verifyOtpAndCreateUser(
+        otpCode,
+        createUserDto,
+      );
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
+  }
+  // create passsword
+  @Post('create-password')
+  async createPassword(@Body() body: { email: string; password: string }) {
+    const { email, password } = body;
+    return await this.userService.createPassword(email, password);
   }
 }

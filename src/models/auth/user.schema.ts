@@ -22,7 +22,7 @@ export class User extends Document {
   @Prop({ default: '' })
   dob: string;
 
-  @Prop({ required: false })
+  @Prop({ required: false, unique: true })
   email: string;
 
   @Prop({ default: '' })
@@ -37,7 +37,7 @@ export class User extends Document {
   @Prop({ enum: ['Y', 'N'], default: 'N' })
   send_notification_to_email3: 'Y' | 'N';
 
-  @Prop({ required: false })
+  @Prop({ required: false, default: '' })
   password: string;
 
   @Prop({ default: null })

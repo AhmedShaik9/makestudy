@@ -14,13 +14,17 @@ import { CreateAdminDto, UpdateAdminDto } from 'src/dtos/admin.dto';
 import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
 import { Request } from 'express';
 import { RoleGuard } from 'src/guards/role.guard';
+import { RolesGuard } from 'src/guards/roles.guard';
+import { Roles } from 'src/decorators/roles.decorators';
 @Controller('admin-auth')
+@UseGuards(RolesGuard)
 export class AdminauthController {
   constructor(private readonly adminService: AdminauthService) {}
 
   // Get all admins
+  // @UseGuards(JwtAuthGuard, RolesGuard)
   @Get('all')
-  @UseGuards(RoleGuard, JwtAuthGuard)
+  @Roles('admin') // <-- Moved this outside of the method
   async findAll() {
     return await this.adminService.findAll();
   }
