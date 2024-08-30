@@ -51,7 +51,7 @@ export class UserService {
     await this.otpModel.create({
       otpCode: otp,
       createdAt: new Date(),
-      userId: createUserDto.email,
+      userEmail: createUserDto.email,
       isUsed: false,
     });
     await this.mailerService.sendWelcomeEmail(
@@ -68,7 +68,7 @@ export class UserService {
     console.log(createUserDto);
     const otp = await this.otpModel.findOne({
       otpCode,
-      userId: createUserDto.email,
+      userEmail: createUserDto.email,
       isUsed: false,
     });
     // console.log(createUserDto);
@@ -85,7 +85,6 @@ export class UserService {
     // const hashedPassword = this.hashPassword(createUserDto.password);
     const createdUser = new this.userModel({
       ...createUserDto,
-      // password: hashedPassword,
     });
 
     await createdUser.save();
@@ -133,7 +132,7 @@ export class UserService {
 
     const checkValidUser = await this.otpModel
       .find()
-      .where({ userId: user.email });
+      .where({ userEmail: user.email });
     console.log(checkValidUser);
     if (checkValidUser.length > 0 && checkValidUser[0].validated) {
       const hashedPassword = this.hashPassword(password);
@@ -177,8 +176,12 @@ export class UserService {
       .digest('hex');
     return hashedPassword === hashedPlainPassword;
   }
-  async validateOtp(userId: string, otpCode: string): Promise<boolean> {
-    const otp = await this.otpModel.findOne({ userId, otpCode, isUsed: false });
+  async validateOtp(userEmail: string, otpCode: string): Promise<boolean> {
+    const otp = await this.otpModel.findOne({
+      userEmail,
+      otpCode,
+      isUsed: false,
+    });
     if (!otp) {
       return false;
     }

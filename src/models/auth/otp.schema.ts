@@ -10,7 +10,7 @@ export class OTP extends Document {
   createdAt: Date;
 
   @Prop({ required: true })
-  userId: string;
+  userEmail: string;
 
   @Prop({ required: true })
   isUsed: boolean;
