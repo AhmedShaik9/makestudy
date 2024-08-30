@@ -6,14 +6,15 @@ import {
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 // import * as bcrypt from 'bcrypt';
-import { User } from 'src/models/auth/user.schema';
-import { CreateUserDto, LoginDto, UpdateUserDto } from 'src/dtos/user.dto';
+import { User } from '../../models/auth/user.schema';
+import { CreateUserDto, LoginDto, UpdateUserDto } from '../../dtos/user.dto';
 import * as crypto from 'crypto';
 import { JwtService } from '@nestjs/jwt';
 import { MailerService } from '../mail/mailer.service';
 import { OtpGeneratorService } from '../mail/otp-generator.service';
-import { OTP } from 'src/models/auth/otp.schema';
-import { Admin } from 'src/models/auth/admin.schema';
+import { OTP } from '../../models/auth/otp.schema';
+// import { Admin } from 'src/models/auth/admin.schema';
+import { Admin } from '../../models/auth/admin.schema';
 @Injectable()
 export class UserService {
   private readonly saltRounds = 10;

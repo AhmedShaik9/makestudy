@@ -9,8 +9,8 @@ import {
   BadRequestException,
 } from '@nestjs/common';
 import { UserService } from './user.service';
-import { CreateUserDto, LoginDto, UpdateUserDto } from 'src/dtos/user.dto';
-import { User } from 'src/models/auth/user.schema';
+import { CreateUserDto, LoginDto, UpdateUserDto } from '../../dtos/user.dto';
+import { User } from '../../models/auth/user.schema';
 
 @Controller('users')
 export class UserController {

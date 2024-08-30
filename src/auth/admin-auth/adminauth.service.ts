@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Admin } from 'src/models/auth/admin.schema';
-import { CreateAdminDto, UpdateAdminDto } from 'src/dtos/admin.dto';
+import { Admin } from '../../models/auth/admin.schema';
+import { CreateAdminDto, UpdateAdminDto } from '../../dtos/admin.dto';
 import { JwtService } from '@nestjs/jwt';
 // import crypto from 'crypto';
 import * as crypto from 'crypto';

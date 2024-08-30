@@ -11,11 +11,11 @@ import {
 } from '@nestjs/common';
 import { AdminauthService } from './adminauth.service';
 import { CreateAdminDto, UpdateAdminDto } from 'src/dtos/admin.dto';
-import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
+import { JwtAuthGuard } from '../../guards/jwt-auth.guard';
 import { Request } from 'express';
-import { RoleGuard } from 'src/guards/role.guard';
-import { RolesGuard } from 'src/guards/roles.guard';
-import { Roles } from 'src/decorators/roles.decorators';
+import { RoleGuard } from '../../guards/role.guard';
+import { RolesGuard } from '../../guards/roles.guard';
+import { Roles } from '../../decorators/roles.decorators';
 @Controller('admin-auth')
 @UseGuards(RolesGuard)
 export class AdminauthController {

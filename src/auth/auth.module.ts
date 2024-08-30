@@ -1,19 +1,19 @@
 import { Module } from '@nestjs/common';
 import { AdminauthService } from './admin-auth/adminauth.service';
 import { MongooseModule } from '@nestjs/mongoose';
-import { Admin, AdminSchema } from 'src/models/auth/admin.schema';
+import { Admin, AdminSchema } from '.././models/auth/admin.schema';
 import { AdminauthController } from './admin-auth/adminauth.controller';
 import { JwtModule } from '@nestjs/jwt';
 import { JwtStrategy } from './admin-auth/jwt.strategy';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { UserController } from './user/user.controller';
 import { UserService } from './user/user.service';
-import { User, UserSchema } from 'src/models/auth/user.schema';
-import { RoleGuard } from 'src/guards/role.guard';
+import { User, UserSchema } from '../models/auth/user.schema';
+import { RoleGuard } from '../guards/role.guard';
 import { MailerService } from './mail/mailer.service';
-import { OTP, OTPSchema } from 'src/models/auth/otp.schema';
+import { OTP, OTPSchema } from '../models/auth/otp.schema';
 import { OtpGeneratorService } from './mail/otp-generator.service';
-import { RolesGuard } from 'src/guards/roles.guard';
+import { RolesGuard } from '../guards/roles.guard';
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: Admin.name, schema: AdminSchema }]),
