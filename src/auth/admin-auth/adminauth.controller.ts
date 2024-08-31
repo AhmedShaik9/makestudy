@@ -10,17 +10,17 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { AdminauthService } from './adminauth.service';
-import { CreateAdminDto, UpdateAdminDto } from 'src/dtos/admin.dto';
-import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
+import { CreateAdminDto, UpdateAdminDto } from '../../dtos/admin.dto';
+import { JwtAuthGuard } from '../../guards/jwt-auth.guard';
 import { Request } from 'express';
-import { RoleGuard } from 'src/guards/role.guard';
+import { RoleGuard } from '../../guards/role.guard';
 @Controller('admin-auth')
 export class AdminauthController {
   constructor(private readonly adminService: AdminauthService) {}
 
   // Get all admins
+  // @UseGuards(JwtAuthGuard, RolesGuard)
   @Get('all')
-  @UseGuards(RoleGuard, JwtAuthGuard)
   async findAll() {
     return await this.adminService.findAll();
   }

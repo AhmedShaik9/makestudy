@@ -1,9 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import * as bcrypt from 'bcrypt';
-import { Admin } from 'src/models/auth/admin.schema';
-import { CreateAdminDto, UpdateAdminDto } from 'src/dtos/admin.dto';
+import { Admin } from '../../models/auth/admin.schema';
+import { CreateAdminDto, UpdateAdminDto } from '../../dtos/admin.dto';
 import { JwtService } from '@nestjs/jwt';
 // import crypto from 'crypto';
 import * as crypto from 'crypto';
@@ -44,9 +43,8 @@ export class AdminauthService {
     updateAdminDto: UpdateAdminDto,
   ): Promise<Admin | null> {
     if (updateAdminDto.password) {
-      updateAdminDto.password = await bcrypt.hash(
+      updateAdminDto.password = await this.hashPassword(
         updateAdminDto.password,
-        this.saltRounds,
       );
     }
     return await this.adminModel
@@ -87,8 +85,13 @@ export class AdminauthService {
 
   async login(username: string, password: string) {
     const admin = await this.adminModel.findOne({ username });
+    console.log(admin);
     if (admin && this.validatePassword(password, admin.password)) {
-      const payload = { username: admin.username, sub: admin._id };
+      const payload = {
+        username: admin.username,
+        sub: admin._id,
+        role: admin.type,
+      };
       const expirationDate = new Date();
       expirationDate.setMinutes(
         expirationDate.getMinutes() + this.accessTokenExpiresIn,

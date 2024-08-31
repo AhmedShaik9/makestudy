@@ -28,7 +28,7 @@ export class CreateUserDto {
   @IsString()
   @IsOptional()
   readonly email2?: string;
-
+  @IsOptional()
   @IsString()
   readonly password: string;
 
