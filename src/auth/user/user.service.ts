@@ -189,4 +189,52 @@ export class UserService {
     await otp.save();
     return true;
   }
+  async restPassword(email: string) {
+    const user = await this.userModel.findOne({ email });
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+    const otp = this.otpGenerator.generateOtp();
+    const subject = 'Password Reset';
+    const text = `Dear ${user.first_name},\n\nYour OTP for password reset is ${otp}.`;
+    const html = `
+        <div style="font-family: Arial, sans-serif; line-height: 1.5;">
+          <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR8gFHJGUqaBqmeXxBpdpGkqCMefNxTkwaVOg&s" alt="Welcome Image" style="width: 100%; max-width: 600px;">
+          <h1>Dear ${user.first_name},</h1>
+          <p>We have received a request to reset your password. Below is your OTP for password reset:</p>
+          <h2 style="color: #2E86C1;">${otp}</h2>
+          <p>Make sure to use this OTP within the next 1 minute.</p>
+          <p>Best Regards,<br/>The Team</p>
+        `;
+
+    await this.otpModel.create({
+      otpCode: otp,
+      createdAt: new Date(),
+      userEmail: email,
+      isUsed: false,
+    });
+    await this.mailerService.sendWelcomeEmail(email, subject, text, html);
+    return { message: 'OTP sent successfully' };
+  }
+  async verifyOtpAndResetPassword(
+    otpCode: string,
+    email: string,
+    password: string,
+  ) {
+    const otp = await this.otpModel.findOne({
+      otpCode,
+      userEmail: email,
+      isUsed: false,
+    });
+    if (!otp) {
+      throw new BadRequestException('Invalid or expired OTP');
+    }
+    otp.isUsed = true;
+    await otp.save();
+    const hashedPassword = this.hashPassword(password);
+    await this.userModel
+      .findOneAndUpdate({ email }, { password: hashedPassword })
+      .exec();
+    return { message: 'Password reset successfully' };
+  }
 }

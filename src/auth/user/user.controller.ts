@@ -71,4 +71,22 @@ export class UserController {
     const { email, password } = body;
     return await this.userService.createPassword(email, password);
   }
+  // reset password
+  @Post('reset-password')
+  async restPassword(@Body() body: { email: string }) {
+    const { email } = body;
+    return await this.userService.restPassword(email);
+  }
+  // verify otp and reset password
+  @Post('verify-otp-and-reset-password')
+  async verifyOtpAndResetPassword(
+    @Body() body: { otpCode: string; email: string; password: string },
+  ) {
+    const { otpCode, email, password } = body;
+    return await this.userService.verifyOtpAndResetPassword(
+      otpCode,
+      email,
+      password,
+    );
+  }
 }
