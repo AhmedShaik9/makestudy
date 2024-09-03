@@ -1,3 +1,4 @@
+// src/blogs/blogs.controller.ts
 import {
   Controller,
   Get,
@@ -6,24 +7,47 @@ import {
   Param,
   Res,
   HttpStatus,
+  UseInterceptors,
+  UploadedFiles,
+  Delete,
+  Query,
 } from '@nestjs/common';
-import { Response } from 'express'; // Import Response from express
+import { Response } from 'express';
 import { BlogsService } from './blogs.service';
 import { Types } from 'mongoose';
 import { CreateBlogDto } from 'src/dtos/blog.dto';
+import { MulterService } from 'src/libs/common/src/multer/multer.service';
+import { FilesInterceptor } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
+// import { extname } from 'path';
 
 @Controller('blogs')
 export class BlogsController {
-  constructor(private readonly blogService: BlogsService) {}
+  constructor(
+    private readonly blogService: BlogsService,
+    private readonly multerService: MulterService,
+  ) {}
 
   @Get()
-  async getAllBlogs(@Res() res: Response) {
+  async getAllBlogs(
+    @Res() res: Response,
+    @Query('skip') skip: number,
+    @Query('limit') limit: number,
+  ) {
     try {
-      const blogs = await this.blogService.getAllBlogs();
+      const blogs = await this.blogService.getAllBlogs(skip, limit);
+      const baseUrl = '../../uploads/blogs/';
+      // const url='../../uploads/blogs/1725386083817-158548173.png';
+      const blogsWithUrls = blogs.map((blog) => ({
+        ...blog.toObject(),
+        featured_image: baseUrl + blog.featured_image,
+        thumb_image: baseUrl + blog.thumb_image,
+      }));
+
       return res.status(HttpStatus.OK).json({
         statusCode: HttpStatus.OK,
         message: 'Blogs fetched successfully',
-        data: blogs,
+        data: blogsWithUrls,
       });
     } catch (error) {
       return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
@@ -44,10 +68,20 @@ export class BlogsController {
           message: 'Blog not found',
         });
       }
+
+      const baseUrl = '../../uploads/blogs/'; // This matches the `serveRoot` configuration
+      const blogWithUrls = {
+        ...blog.toObject(),
+        featured_image: baseUrl + blog.featured_image,
+        thumb_image: baseUrl + blog.thumb_image,
+      };
+
+      console.log(blogWithUrls);
+
       return res.status(HttpStatus.OK).json({
         statusCode: HttpStatus.OK,
         message: 'Blog fetched successfully',
-        data: blog,
+        data: blogWithUrls,
       });
     } catch (error) {
       return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
@@ -83,8 +117,27 @@ export class BlogsController {
   }
 
   @Post('create-blog')
-  async createBlog(@Body() createBlogDto: CreateBlogDto, @Res() res: Response) {
+  @UseInterceptors(
+    FilesInterceptor('files', 10, {
+      storage: diskStorage({
+        destination: 'uploads/blogs',
+        filename: (req, file, callback) => {
+          // const uniqueSuffix =
+          //   Date.now() + '-' + Math.round(Math.random() * 1e9);
+          callback(null, file.originalname);
+        },
+      }),
+    }),
+  )
+  async createBlog(
+    @Body() createBlogDto: CreateBlogDto,
+    @Res() res: Response,
+    @UploadedFiles() files: Express.Multer.File[],
+  ) {
     try {
+      console.log(files);
+      createBlogDto.featured_image = files[0].filename;
+      createBlogDto.thumb_image = files[1].filename;
       const createdBlog = await this.blogService.createBlog(createBlogDto);
       return res.status(HttpStatus.CREATED).json({
         statusCode: HttpStatus.CREATED,
@@ -101,12 +154,27 @@ export class BlogsController {
   }
 
   @Post('update-blog/:id')
+  @UseInterceptors(
+    FilesInterceptor('files', 10, {
+      storage: diskStorage({
+        destination: 'uploads/blogs',
+        filename: (req, file, callback) => {
+          // const uniqueSuffix =
+          //   Date.now() + '-' + Math.round(Math.random() * 1e9);
+          callback(null, file.originalname);
+        },
+      }),
+    }),
+  )
   async updateBlog(
     @Param('id') id: string,
     @Body() createBlogDto: CreateBlogDto,
     @Res() res: Response,
+    @UploadedFiles() files: Express.Multer.File[],
   ) {
     try {
+      createBlogDto.featured_image = files[0].filename;
+      createBlogDto.thumb_image = files[1].filename;
       const updatedBlog = await this.blogService.updateBlog(
         new Types.ObjectId(id),
         createBlogDto,
@@ -131,7 +199,7 @@ export class BlogsController {
     }
   }
 
-  @Post('delete-blog/:id')
+  @Delete('delete-blog/:id')
   async deleteBlog(@Param('id') id: string, @Res() res: Response) {
     try {
       const deletedBlog = await this.blogService.deleteBlog(

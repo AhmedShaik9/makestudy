@@ -6,6 +6,7 @@ import { DatabaseModule } from './database/database.module';
 import { ModalsModule } from './models/models.module';
 import { AuthModule } from './auth/auth.module';
 import { BlogsModule } from './blogs/blogs.module';
+import { CommonModule } from './libs/common/src';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { BlogsModule } from './blogs/blogs.module';
     ModalsModule,
     AuthModule,
     BlogsModule,
+    CommonModule,
   ],
   controllers: [AppController],
   providers: [AppService],

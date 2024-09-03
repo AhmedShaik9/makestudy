@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create Blog</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    form {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    .form-group {
+      margin-bottom: 15px;
+    }
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+    }
+    .form-group input, .form-group textarea, .form-group select {
+      width: 100%;
+      padding: 8px;
+      box-sizing: border-box;
+    }
+    .form-group input[type="file"] {
+      padding: 0;
+    }
+    .form-group button {
+      padding: 10px 15px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    .form-group button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Create Blog</h1>
+  <form action="http://localhost:3000/blogs/create-blog" method="POST" enctype="multipart/form-data">
+    <div class="form-group">
+      <label for="title">Title:</label>
+      <input type="text" id="title" name="title" required>
+    </div>
+
+    <div class="form-group">
+      <label for="slug">Slug:</label>
+      <input type="text" id="slug" name="slug">
+    </div>
+
+    <div class="form-group">
+      <label for="description">Description:</label>
+      <textarea id="description" name="description" rows="4"></textarea>
+    </div>
+
+    <div class="form-group">
+      <label for="featured_image">Featured Image:</label>
+      <input type="file" id="featured_image" name="files">
+    </div>
+
+    <div class="form-group">
+      <label for="thumb_image">Thumbnail Image:</label>
+      <input type="file" id="thumb_image" name="files">
+    </div>
+
+    <div class="form-group">
+      <label for="added_date">Added Date:</label>
+      <input type="date" id="added_date" name="added_date">
+    </div>
+
+    <div class="form-group">
+      <label for="updated_date">Updated Date:</label>
+      <input type="date" id="updated_date" name="updated_date">
+    </div>
+
+    <div class="form-group">
+      <label for="is_published">Is Published:</label>
+      <select id="is_published" name="is_published">
+        <option value="Y">Yes</option>
+        <option value="N">No</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="publish_date">Publish Date:</label>
+      <input type="date" id="publish_date" name="publish_date">
+    </div>
+
+    <div class="form-group">
+      <label for="is_deleted">Is Deleted:</label>
+      <select id="is_deleted" name="is_deleted">
+        <option value="Y">Yes</option>
+        <option value="N">No</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <button type="submit">Create Blog</button>
+    </div>
+  </form>
+
+</body>
+</html>
