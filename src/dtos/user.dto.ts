@@ -3,67 +3,67 @@ import { PartialType } from '@nestjs/mapped-types';
 
 export class CreateUserDto {
   @IsString()
-  readonly first_name: string;
+  first_name: string;
 
   @IsString()
-  readonly last_name: string;
+  last_name: string;
 
   @IsString()
-  readonly company: string;
-
-  @IsString()
-  @IsOptional()
-  readonly user_code?: string;
-
-  @IsString()
-  readonly gender: string;
+  company: string;
 
   @IsString()
   @IsOptional()
-  readonly dob?: string;
+  user_code?: string;
+
+  @IsString()
+  gender: string;
+
+  @IsString()
+  @IsOptional()
+  dob?: string;
 
   @IsEmail()
-  readonly email: string;
+  email: string;
 
   @IsString()
   @IsOptional()
-  readonly email2?: string;
+  email2?: string;
   @IsOptional()
   @IsString()
-  readonly password: string;
+  password: string;
 
   @IsString()
   @IsOptional()
-  readonly mobile_no?: string;
+  mobile_no?: string;
 
   @IsString()
-  readonly country_code: string;
+  country_code: string;
 
   @IsString()
-  readonly whatsapp_no: string;
+  whatsapp_no: string;
 
   @IsString()
-  readonly address: string;
+  address: string;
 
   @IsOptional()
-  readonly city_id?: number;
+  city_id?: number;
 
   @IsOptional()
-  readonly state_id?: number;
+  state_id?: number;
 
   @IsOptional()
-  readonly country_id?: number;
+  country_id?: number;
 
   @IsString()
-  readonly pincode: string;
+  pincode: string;
 }
 
 export class UpdateUserDto extends PartialType(CreateUserDto) {}
 
 export class LoginDto {
   @IsEmail()
-  readonly email: string;
+  email: string;
 
   @IsString()
-  readonly password: string;
+  password: string;
 }

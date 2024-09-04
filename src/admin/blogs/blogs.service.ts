@@ -11,7 +11,27 @@ export class BlogsService {
   constructor(@InjectModel('Blog') private readonly blogModel: Model<Blog>) {}
 
   getAllBlogs(skip: number, limit: number): Promise<Blog[]> {
+    return this.blogModel
+      .find()
+      .where('is_published')
+      .equals('Y')
+      .skip(skip)
+      .limit(limit)
+      .exec();
+  }
+  // get all blogs admin
+  getAllBlogsAdmin(skip: number, limit: number): Promise<Blog[]> {
     return this.blogModel.find().skip(skip).limit(limit).exec();
+  }
+  // get unpublished blogs
+  getUnpublishedBlogs(skip: number, limit: number): Promise<Blog[]> {
+    return this.blogModel
+      .find()
+      .where('is_published')
+      .equals('N')
+      .skip(skip)
+      .limit(limit)
+      .exec();
   }
 
   getBlogById(id: Types.ObjectId): Promise<Blog> {
