@@ -17,6 +17,7 @@ export class BlogsService {
       .equals('Y')
       .skip(skip)
       .limit(limit)
+      .sort({ _id: -1 })
       .exec();
   }
   // get all blogs admin
