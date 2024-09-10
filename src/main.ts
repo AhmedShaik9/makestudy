@@ -1,15 +1,35 @@
+// import { NestFactory } from '@nestjs/core';
+// import { AppModule } from './app.module';
+// import { NestExpressApplication } from '@nestjs/platform-express';
+// import { join } from 'path';
+
+// async function bootstrap() {
+//   const app = await NestFactory.create<NestExpressApplication>(AppModule);
+//   app.useStaticAssets(join(__dirname, '..', 'uploads'), {
+//     prefix: '/uploads/',
+//   });
+//   app.enableCors();
+
+//   await app.listen(3000);
+// }
+// bootstrap();
+
+//  with https
+
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { NestExpressApplication } from '@nestjs/platform-express';
-import { join } from 'path';
+import { AppClusterService } from './libs/common/src/cluster/app-cluster.service';
+import * as fs from 'fs';
 
 async function bootstrap() {
-  const app = await NestFactory.create<NestExpressApplication>(AppModule);
-  app.useStaticAssets(join(__dirname, '..', 'uploads'), {
-    prefix: '/uploads/',
-  });
-  app.enableCors();
+  const httpsOptions = {
+    key: fs.readFileSync('./key.pem'),
+    cert: fs.readFileSync('./cert.pem'),
+    passphrase: 'makestudy', // Remove this if the key is not encrypted
+  };
 
+  const app = await NestFactory.create(AppModule, { httpsOptions });
   await app.listen(3000);
 }
-bootstrap();
+
+AppClusterService.clusterize(bootstrap);

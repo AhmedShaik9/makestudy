@@ -10,15 +10,15 @@ import { join } from 'path';
 export class BlogsService {
   constructor(@InjectModel('Blog') private readonly blogModel: Model<Blog>) {}
 
-  getAllBlogs(skip: number, limit: number): Promise<Blog[]> {
-    return this.blogModel
+  async getAllBlogs(skip: number, limit: number) {
+    const countDocuments = await this.blogModel.estimatedDocumentCount();
+    const blogs = await this.blogModel
       .find()
-      .where('is_published')
-      .equals('Y')
       .skip(skip)
       .limit(limit)
       .sort({ _id: -1 })
       .exec();
+    return { blogs, countDocuments };
   }
   // get all blogs admin
   getAllBlogsAdmin(skip: number, limit: number): Promise<Blog[]> {

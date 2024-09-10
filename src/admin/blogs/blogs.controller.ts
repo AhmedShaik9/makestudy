@@ -36,7 +36,10 @@ export class BlogsController {
     @Query('limit') limit: number,
   ) {
     try {
-      const blogs = await this.blogService.getAllBlogs(skip, limit);
+      const { blogs, countDocuments } = await this.blogService.getAllBlogs(
+        skip,
+        limit,
+      );
       // const url='../../uploads/blogs/1725386083817-158548173.png';
       const blogsWithUrls = blogs.map((blog) => ({
         ...blog.toObject(),
@@ -48,6 +51,7 @@ export class BlogsController {
         statusCode: HttpStatus.OK,
         message: 'Blogs fetched successfully',
         data: blogsWithUrls,
+        count: countDocuments,
       });
     } catch (error) {
       return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
