@@ -27,7 +27,8 @@ export class BlogsController {
     private readonly blogService: BlogsService,
     private readonly multerService: MulterService,
   ) {}
-  baseUrl = 'http://localhost:3000/uploads/blogs/';
+  // baseUrl = 'https://localhost:3000/uploads/blogs/';
+  baseUrl = 'https://make-study.com/uploads/blogs/';
 
   @Get()
   async getAllBlogs(
