@@ -56,6 +56,33 @@ export class CreateProgramCourseDto {
 
   @IsString()
   publishedDate: string;
+
+  @IsString()
+  seatConfirmationDeposit: string;
+
+  @IsString()
+  duration: string;
+
+  @IsString()
+  country: string;
+
+  @IsString()
+  city: string;
+
+  @IsString()
+  courseDetails: string;
+
+  @IsString()
+  courseRequirements: string;
+
+  @IsString()
+  languageRequirements: string;
+
+  @IsString()
+  careerOpportunities: string;
+
+  @IsString()
+  courseHighlights: string;
 }
 
 export class UpdateProgramCourseDto {
@@ -126,4 +153,25 @@ export class UpdateProgramCourseDto {
   @IsString()
   @IsOptional()
   publishedDate?: string;
+
+  @IsString()
+  country: string;
+
+  @IsString()
+  city: string;
+
+  @IsString()
+  courseDetails: string;
+
+  @IsString()
+  courseRequirements: string;
+
+  @IsString()
+  languageRequirements: string;
+
+  @IsString()
+  careerOpportunities: string;
+
+  @IsString()
+  courseHighlights: string;
 }

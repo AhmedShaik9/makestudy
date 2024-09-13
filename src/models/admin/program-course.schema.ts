@@ -12,10 +12,30 @@ export class ProgramCourse {
   courseImage: string;
 
   @Prop({ required: false, type: String })
+  country: string;
+  @Prop({ required: false, type: String })
+  city: string;
+  @Prop({ required: false, type: String })
+  courseDetails: string;
+  @Prop({ required: false, type: String })
+  courseRequirements: string;
+
+  @Prop({ required: false, type: String })
+  languageRequirements: string;
+
+  @Prop({ required: false, type: String })
+  careerOpportunities: string;
+
+  @Prop({ required: false, type: String })
+  courseHighlights: string;
+  @Prop({ required: false, type: String })
   collageName: string;
 
   @Prop({ required: false, type: String })
   courseDescription: string;
+
+  @Prop({ required: false, type: String })
+  duration: string;
 
   @Prop({ required: false, type: String })
   courseLength: string;
@@ -34,6 +54,9 @@ export class ProgramCourse {
 
   @Prop({ required: false, type: String })
   LOAdeposit: string;
+
+  @Prop({ required: false, type: String })
+  seatConfirmationDeposit: string;
 
   @Prop({ required: false, type: String })
   annualTuitionFee: string;

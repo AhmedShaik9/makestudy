@@ -9,6 +9,9 @@ export class CreateProgramDto {
 
   @IsString()
   programDescription: string;
+
+  @IsString()
+  programImage: string;
 }
 
 export class UpdateProgramDto {
@@ -20,4 +23,7 @@ export class UpdateProgramDto {
 
   @IsString()
   programDescription?: string;
+
+  @IsString()
+  programImage?: string;
 }
