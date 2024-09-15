@@ -28,7 +28,7 @@ export class BlogsController {
     private readonly multerService: MulterService,
   ) {}
   // baseUrl = 'http://localhost:3000/uploads/blogs/';
-  baseUrl = 'https://partners.makestudy.com/uploads/blogs/';
+  baseUrl = 'http://partners.makestudy.com/uploads/blogs/';
 
   @Get()
   async getAllBlogs(
