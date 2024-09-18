@@ -1,14 +1,48 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html>
 <head>
     <title>Image Test</title>
 </head>
 <body>
-    <img src="http://partners.makestudy.com/uploads/blogs/sir-wilfrid-laurier-school-board_thumb.png" alt="Test Image">
+    <img src="http://partners.makestudy.com/uploads/blogs/most-affordable-master-degree-ma-in-canada-application-fee-waiver-spouse-can-go-along_thumb.jpg" alt="Test Image">
      <h1>check</h1>
     <script>
 
       
     </script>
+</body>
+</html> -->
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Blog API Example</title>
+</head>
+<body>
+  <h1>Blog Posts</h1>
+  <div id="blogPosts"></div>
+  <img src="http://partners.makestudy.com/uploads/blogs/institutional-and-home-care-assistance-program-canada-college-inc-montreal-canada_thumb.jpg" width="200px">
+
+  <script>
+    // JavaScript code to fetch blog posts
+    fetch('http://partners.makestudy.com:3001/blogs?skip=10&limit=6')
+      .then(response => response.json())
+      .then(data => {
+        const blogPostsDiv = document.getElementById('blogPosts');
+
+        data.forEach(post => {
+          const postDiv = document.createElement('div');
+          postDiv.innerHTML = `
+            <h2>${post.title}</h2>
+            <p>${post.content}</p>
+            <p>Author: ${post.author}</p>
+          `;
+          blogPostsDiv.appendChild(postDiv);
+        });
+      })
+      .catch(error => {
+        console.error('Error fetching blog posts:', error);
+      });
+  </script>
 </body>
 </html>

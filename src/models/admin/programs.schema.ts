@@ -11,8 +11,8 @@ export class Program {
   @Prop({ type: String, required: true })
   programDescription: string;
 
-  @Prop({ type: String, required: true })
-  programImage: string;
+  @Prop({ type: Array, required: true })
+  programImage: string[];
 }
 
 export const ProgramSchema = SchemaFactory.createForClass(Program);
