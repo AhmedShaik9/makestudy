@@ -2,18 +2,31 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { join } from 'path';
+import * as fs from 'fs';
 
 async function bootstrap() {
-  const app = await NestFactory.create<NestExpressApplication>(AppModule);
+  // Load the SSL certificates with an absolute path
+  const httpsOptions = {
+    key: fs.readFileSync(join(__dirname, '..', 'private.key')),
+    cert: fs.readFileSync(join(__dirname, '..', 'certificate.crt')),
+    ca: fs.readFileSync(join(__dirname, '..', 'ca_bundle.crt')),
+  };
+
+  // Create the HTTPS server using the certificates
+  const app = await NestFactory.create<NestExpressApplication>(AppModule, {
+    httpsOptions,
+  });
+
   app.setGlobalPrefix('api');
   app.useStaticAssets(join(__dirname, '..', 'uploads'), {
     prefix: '/uploads/',
   });
   app.enableCors();
 
-  await app.listen(3000);
+  await app.listen(3001);
 }
 bootstrap();
+
 
 //  with https
 
