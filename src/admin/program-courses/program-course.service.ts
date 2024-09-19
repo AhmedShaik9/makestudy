@@ -10,18 +10,30 @@ import {
   CreateProgramCourseDto,
   UpdateProgramCourseDto,
 } from 'src/dtos/program-courses.dto';
+import { SlugService } from 'src/libs/common/src/slug/slug.service';
 
 @Injectable()
 export class ProgramCourseService {
   constructor(
     @InjectModel(ProgramCourse.name)
     private programCourseModel: Model<ProgramCourse>,
+    private slugService: SlugService,
   ) {}
 
   async createProgramCourse(
     createProgramCourseDto: CreateProgramCourseDto,
   ): Promise<ProgramCourse> {
-    return this.programCourseModel.create(createProgramCourseDto);
+    // return this.programCourseModel.create(createProgramCourseDto);
+
+    const newProgramCourse = new this.programCourseModel(
+      createProgramCourseDto,
+    );
+
+    newProgramCourse.slug = await this.slugService.generateUniqueSlug(
+      createProgramCourseDto.courseName,
+      this.programCourseModel,
+    );
+    return newProgramCourse.save();
   }
 
   async getAllProgramCourses(
@@ -35,6 +47,17 @@ export class ProgramCourseService {
     const programCourse = await this.programCourseModel.findById(id).exec();
     if (!programCourse) {
       throw new NotFoundException(`ProgramCourse with id ${id} not found`);
+    }
+    return programCourse;
+  }
+
+  async getProgramCourseBySlug(slug: string): Promise<ProgramCourse> {
+    const programCourse = await this.programCourseModel
+      .findOne({ slug })
+      .exec();
+    if (!programCourse) {
+      throw new NotFoundException(`ProgramCourse with slug ${slug} not found`);
+      // return { message: 'ProgramCourse not found' };
     }
     return programCourse;
   }

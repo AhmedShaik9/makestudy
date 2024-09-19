@@ -29,6 +29,10 @@ export class ProgramController {
   async findOne(@Param('id') id: string): Promise<Program> {
     return this.programService.findOne(id);
   }
+  @Get(':slug')
+  async findBySlug(@Param('slug') slug: string): Promise<Program> {
+    return this.programService.getProgramBySlug(slug);
+  }
 
   @Put(':id')
   async update(

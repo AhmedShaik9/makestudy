@@ -13,6 +13,9 @@ export class Program {
 
   @Prop({ type: Array, required: true })
   programImage: string[];
+
+  @Prop({ type: String, required: true, unique: true, slug: 'programName' })
+  slug: string;
 }
 
 export const ProgramSchema = SchemaFactory.createForClass(Program);

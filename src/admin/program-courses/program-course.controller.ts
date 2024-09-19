@@ -86,6 +86,38 @@ export class ProgramCourseController {
     }
   }
 
+  @Get(':slug')
+  async getProgramCourseBySlug(
+    @Param('slug') slug: string,
+    @Res() res: Response,
+  ) {
+    try {
+      const programCourse =
+        await this.programCourseService.getProgramCourseBySlug(slug);
+      if (!programCourse) {
+        return res.status(HttpStatus.NOT_FOUND).json({
+          statusCode: HttpStatus.NOT_FOUND,
+          message: 'ProgramCourse not found',
+        });
+      }
+      const programCourseWithUrl = {
+        ...programCourse,
+        courseImage: this.baseUrl + programCourse.courseImage,
+      };
+      return res.status(HttpStatus.OK).json({
+        statusCode: HttpStatus.OK,
+        message: 'ProgramCourse fetched successfully',
+        data: programCourseWithUrl,
+      });
+    } catch (error) {
+      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+        statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+        message: 'Failed to fetch program course',
+        error: error.message,
+      });
+    }
+  }
+
   @Post()
   @UseInterceptors(
     FilesInterceptor('files', 10, {

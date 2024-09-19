@@ -9,6 +9,7 @@ import { BlogsModule } from './admin/blogs/blogs.module';
 import { CommonModule } from './libs/common/src';
 import { ProgramCoursesModule } from './admin/program-courses/program-courses.module';
 import { ProgramModule } from './admin/program/program.module';
+import { SlugService } from './libs/common/src/slug/slug.service';
 
 @Module({
   imports: [
@@ -24,6 +25,6 @@ import { ProgramModule } from './admin/program/program.module';
     ProgramModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, SlugService],
 })
 export class AppModule {}

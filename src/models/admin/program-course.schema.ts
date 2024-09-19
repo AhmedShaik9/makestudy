@@ -12,6 +12,9 @@ export class ProgramCourse {
   @Prop({ required: false, type: String })
   courseImage: string;
 
+  @Prop({ required: true, type: String, unique: true, slug: 'courseName' })
+  slug: string;
+
   @Prop({ required: false, type: String })
   country: string;
   @Prop({ required: false, type: String })

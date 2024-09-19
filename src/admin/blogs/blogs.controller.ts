@@ -28,7 +28,8 @@ export class BlogsController {
     private readonly multerService: MulterService,
   ) {}
   // baseUrl = 'http://localhost:3000/uploads/blogs/';
-  baseUrl = 'http://partners.makestudy.com/uploads/blogs/';
+  // baseUrl = 'http://partners.makestudy.com/uploads/blogs/';
+  baseUrl = 'https://partners.makestudy.com:8443/uploads/blogs/';
 
   @Get()
   async getAllBlogs(
@@ -147,16 +148,12 @@ export class BlogsController {
       });
     }
   }
-
-  @Get('slug/:slug')
+  @Get('get-blog/:slug')
   async getBlogBySlug(@Param('slug') slug: string, @Res() res: Response) {
+    console.log(slug);
+
     try {
       const blog = await this.blogService.getBlogBySlug(slug);
-      const blogWithUrls = {
-        ...blog.toObject(),
-        featured_image: this.baseUrl + blog.featured_image,
-        thumb_image: this.baseUrl + blog.thumb_image,
-      };
 
       if (!blog) {
         return res.status(HttpStatus.NOT_FOUND).json({
@@ -164,6 +161,13 @@ export class BlogsController {
           message: 'Blog not found',
         });
       }
+
+      const blogWithUrls = {
+        ...blog.toObject(),
+        featured_image: this.baseUrl + blog.featured_image,
+        thumb_image: this.baseUrl + blog.thumb_image,
+      };
+
       return res.status(HttpStatus.OK).json({
         statusCode: HttpStatus.OK,
         message: 'Blog fetched successfully',

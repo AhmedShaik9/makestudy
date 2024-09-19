@@ -2,16 +2,22 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { CreateProgramDto, UpdateProgramDto } from 'src/dtos/program.dto';
+import { SlugService } from 'src/libs/common/src/slug/slug.service';
 import { Program } from 'src/models/admin/programs.schema';
 
 @Injectable()
 export class ProgramService {
   constructor(
     @InjectModel(Program.name) private programModel: Model<Program>,
+    private slugService: SlugService,
   ) {}
 
   async create(createProgramDto: CreateProgramDto): Promise<Program> {
     const newProgram = new this.programModel(createProgramDto);
+    newProgram.slug = await this.slugService.generateUniqueSlug(
+      createProgramDto.programName,
+      this.programModel,
+    );
     return newProgram.save();
   }
 
@@ -23,6 +29,14 @@ export class ProgramService {
     const program = await this.programModel.findById(id).exec();
     if (!program) {
       throw new NotFoundException(`Program with id ${id} not found`);
+    }
+    return program;
+  }
+
+  async getProgramBySlug(slug: string): Promise<Program> {
+    const program = await this.programModel.findOne({ slug }).exec();
+    if (!program) {
+      throw new NotFoundException(`Program with slug ${slug} not found`);
     }
     return program;
   }
