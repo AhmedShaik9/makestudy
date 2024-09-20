@@ -2,6 +2,7 @@ import {
   Injectable,
   NotFoundException,
   BadRequestException,
+  ConflictException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
@@ -33,7 +34,7 @@ export class UserService {
   ): Promise<{ message: string }> {
     const user = await this.userModel.findOne({ email: createUserDto.email });
     if (user) {
-      return { message: 'User already exists' };
+      throw new ConflictException('User already exists');
     }
     const otp = this.otpGenerator.generateOtp();
     const subject = 'Welcome to Our Service!';
