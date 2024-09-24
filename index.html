@@ -1,48 +1,55 @@
-<!-- <!DOCTYPE html>
-<html>
-<head>
-    <title>Image Test</title>
-</head>
-<body>
-    <img src="http://partners.makestudy.com/uploads/blogs/most-affordable-master-degree-ma-in-canada-application-fee-waiver-spouse-can-go-along_thumb.jpg" alt="Test Image">
-     <h1>check</h1>
-    <script>
-
-      
-    </script>
-</body>
-</html> -->
-
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Blog API Example</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Signature Pad Example</title>
+    <style>
+        canvas {
+            border: 1px solid #000;
+            touch-action: none; /* Prevents touch scrolling */
+        }
+    </style>
 </head>
 <body>
-  <h1>Blog Posts</h1>
-  <div id="blogPosts"></div>
-  <img src="https://partners.makestudy.com:8443/uploads/blogs/institutional-and-home-care-assistance-program-canada-college-inc-montreal-canada_thumb.jpg" width="200px">
+    <h1>Draw Your Signature</h1>
+    <canvas id="signature-pad" width="400" height="200"></canvas>
+    <br>
+    <button id="clear">Clear</button>
+    <button id="save">Save</button>
 
-  <script>
-    // JavaScript code to fetch blog posts
-    fetch('http://partners.makestudy.com:3001/blogs?skip=10&limit=6')
-      .then(response => response.json())
-      .then(data => {
-        const blogPostsDiv = document.getElementById('blogPosts');
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/signature_pad/4.0.0/signature_pad.min.js"></script>
+    <script>
+        const canvas = document.getElementById('signature-pad');
+        const signaturePad = new SignaturePad(canvas);
 
-        data.forEach(post => {
-          const postDiv = document.createElement('div');
-          postDiv.innerHTML = `
-            <h2>${post.title}</h2>
-            <p>${post.content}</p>
-            <p>Author: ${post.author}</p>
-          `;
-          blogPostsDiv.appendChild(postDiv);
+        document.getElementById('clear').addEventListener('click', () => {
+            signaturePad.clear();
         });
-      })
-      .catch(error => {
-        console.error('Error fetching blog posts:', error);
-      });
-  </script>
+
+        document.getElementById('save').addEventListener('click', () => {
+            if (signaturePad.isEmpty()) {
+                alert("Please provide a signature first.");
+            } else {
+                const dataURL = signaturePad.toDataURL();
+                console.log(dataURL); // You can send this to your server
+                // Example of saving the signature
+                fetch('/save-signature', {
+                    method: 'POST',
+                    body: JSON.stringify({ signature: dataURL }),
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Success:', data);
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                });
+            }
+        });
+    </script>
 </body>
 </html>
