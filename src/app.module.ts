@@ -10,6 +10,7 @@ import { CommonModule } from './libs/common/src';
 import { ProgramCoursesModule } from './admin/program-courses/program-courses.module';
 import { ProgramModule } from './admin/program/program.module';
 import { SlugService } from './libs/common/src/slug/slug.service';
+import { AgentModule } from './agent/agent.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { SlugService } from './libs/common/src/slug/slug.service';
     CommonModule,
     ProgramCoursesModule,
     ProgramModule,
+    AgentModule,
   ],
   controllers: [AppController],
   providers: [AppService, SlugService],

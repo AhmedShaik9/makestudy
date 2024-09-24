@@ -1,0 +1,26 @@
+agentid is object id ref User 
+Organization Name,
+Agency/Head office Address,
+No of Branches default 1,
+country,
+state,
+city,
+contact person information 
+Person Name:
+Designation:
+Email:
+Country phone code:
+Contact no:
+Bank Details[Beneficiary Name
+Account No*:
+Bank Name*:
+Bank Address*:
+Branch Name:
+Bank Code:
+Swift Code*:
+IFSC Code (for India):
+PAN No:
+GST No:]
+
+
+

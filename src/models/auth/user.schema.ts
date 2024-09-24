@@ -79,7 +79,7 @@ export class User extends Document {
   @Prop({ enum: ['Y', 'N'], default: 'N' })
   is_deleted: 'Y' | 'N';
 
-  @Prop({ required: false })
+  @Prop({ required: false, enum: ['agent', 'user'], default: 'agent' })
   usertype: string;
 
   @Prop({ default: null })

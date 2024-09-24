@@ -53,14 +53,11 @@ export class UserController {
 
   @Post('verify-otp')
   async verifyOtpAndCreateUser(
-    @Body() body: { otpCode: string; createUserDto: CreateUserDto },
+    @Body() body: { otpCode: string; email: string },
   ) {
-    const { otpCode, createUserDto } = body;
+    const { otpCode, email } = body;
     try {
-      return await this.userService.verifyOtpAndCreateUser(
-        otpCode,
-        createUserDto,
-      );
+      return await this.userService.verifyOtpAndCreateUser(otpCode, email);
     } catch (error) {
       throw new BadRequestException(error.message);
     }
