@@ -9,7 +9,7 @@ export class Blog extends Document {
   @Prop({ type: String, required: false })
   title: string;
 
-  @Prop({ type: String, required: false })
+  @Prop({ type: String, required: false, slug: 'title', unique: true })
   slug: string;
 
   @Prop({ type: String, required: false })

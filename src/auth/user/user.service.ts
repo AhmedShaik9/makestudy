@@ -2,6 +2,7 @@ import {
   Injectable,
   NotFoundException,
   BadRequestException,
+  ConflictException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
@@ -10,8 +11,8 @@ import { User } from '../../models/auth/user.schema';
 import { CreateUserDto, LoginDto, UpdateUserDto } from '../../dtos/user.dto';
 import * as crypto from 'crypto';
 import { JwtService } from '@nestjs/jwt';
-import { MailerService } from '../mail/mailer.service';
-import { OtpGeneratorService } from '../mail/otp-generator.service';
+import { MailerService } from '../../libs/common/src/mail/mailer.service';
+import { OtpGeneratorService } from '../../libs/common/src/mail/otp-generator.service';
 import { OTP } from '../../models/auth/otp.schema';
 // import { Admin } from 'src/models/auth/admin.schema';
 import { Admin } from '../../models/auth/admin.schema';
@@ -19,6 +20,7 @@ import { Admin } from '../../models/auth/admin.schema';
 export class UserService {
   private readonly saltRounds = 10;
   private accessTokenExpiresIn = 50;
+  private userCache = new Map<string, CreateUserDto>();
 
   constructor(
     @InjectModel(User.name) private readonly userModel: Model<User>,
@@ -33,7 +35,7 @@ export class UserService {
   ): Promise<{ message: string }> {
     const user = await this.userModel.findOne({ email: createUserDto.email });
     if (user) {
-      return { message: 'User already exists' };
+      throw new ConflictException('User already exists');
     }
     const otp = this.otpGenerator.generateOtp();
     const subject = 'Welcome to Our Service!';
@@ -60,36 +62,77 @@ export class UserService {
       text,
       html,
     );
+    this.userCache.set(createUserDto.email, createUserDto);
+    setTimeout(() => this.userCache.delete(createUserDto.email), 90000);
 
     return { message: 'OTP sent successfully' };
   }
 
-  async verifyOtpAndCreateUser(otpCode: string, createUserDto: CreateUserDto) {
-    console.log(createUserDto);
+  // async verifyOtpAndCreateUser(otpCode: string, createUserDto: CreateUserDto) {
+  //   console.log(createUserDto);
+  //   try {
+  //     const otp = await this.otpModel.findOne({
+  //       otpCode,
+  //       userEmail: createUserDto.email,
+  //       isUsed: false,
+  //     });
+  //     // console.log(createUserDto);
+  //     if (!otp) {
+  //       throw new BadRequestException('Invalid or expired OTP');
+  //     }
+
+  //     // Mark OTP as used
+  //     otp.isUsed = true;
+  //     otp.validated = true;
+  //     await otp.save();
+
+  //     // Hash the password and save the user
+  //     // const hashedPassword = this.hashPassword(createUserDto.password);
+  //     const createdUser = new this.userModel({
+  //       ...createUserDto,
+  //     });
+
+  //     await createdUser.save();
+  //     return { message: 'User created successfully' };
+  //   } catch (err) {
+  //     console.log(err);
+  //     throw new BadRequestException('Invalid or expired OTP');
+  //   }
+  // }
+
+  async verifyOtpAndCreateUser(
+    otpCode: string,
+    email: string,
+  ): Promise<{ message: string }> {
     const otp = await this.otpModel.findOne({
       otpCode,
-      userEmail: createUserDto.email,
+      userEmail: email,
       isUsed: false,
     });
-    // console.log(createUserDto);
+
     if (!otp) {
       throw new BadRequestException('Invalid or expired OTP');
     }
 
     // Mark OTP as used
     otp.isUsed = true;
-    otp.validated = true;
     await otp.save();
 
-    // Hash the password and save the user
-    // const hashedPassword = this.hashPassword(createUserDto.password);
-    const createdUser = new this.userModel({
-      ...createUserDto,
-    });
+    // Retrieve user data from cache
+    const createUserDto = this.userCache.get(email);
+    if (!createUserDto) {
+      throw new BadRequestException('User data not found');
+    }
 
+    // Create the user
+    const createdUser = new this.userModel({ ...createUserDto });
     await createdUser.save();
+
+    // Clear cached user data
+    this.userCache.delete(email);
     return { message: 'User created successfully' };
   }
+
   hashPassword(password: string): string {
     return crypto.createHash('md5').update(password).digest('hex');
   }

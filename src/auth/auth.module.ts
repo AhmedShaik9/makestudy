@@ -10,9 +10,9 @@ import { UserController } from './user/user.controller';
 import { UserService } from './user/user.service';
 import { User, UserSchema } from '../models/auth/user.schema';
 import { RoleGuard } from '../guards/role.guard';
-import { MailerService } from './mail/mailer.service';
+import { MailerService } from '../libs/common/src/mail/mailer.service';
 import { OTP, OTPSchema } from '../models/auth/otp.schema';
-import { OtpGeneratorService } from './mail/otp-generator.service';
+import { OtpGeneratorService } from '../libs/common/src/mail/otp-generator.service';
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: Admin.name, schema: AdminSchema }]),

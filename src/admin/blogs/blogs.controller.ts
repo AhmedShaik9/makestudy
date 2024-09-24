@@ -27,6 +27,9 @@ export class BlogsController {
     private readonly blogService: BlogsService,
     private readonly multerService: MulterService,
   ) {}
+  // baseUrl = 'http://localhost:3000/uploads/blogs/';
+  // baseUrl = 'http://partners.makestudy.com/uploads/blogs/';
+  baseUrl = 'https://partners.makestudy.com:8443/uploads/blogs/';
 
   @Get()
   async getAllBlogs(
@@ -35,15 +38,70 @@ export class BlogsController {
     @Query('limit') limit: number,
   ) {
     try {
-      const blogs = await this.blogService.getAllBlogs(skip, limit);
-      const baseUrl = '../../uploads/blogs/';
+      const { blogs, countDocuments } = await this.blogService.getAllBlogs(
+        skip,
+        limit,
+      );
       // const url='../../uploads/blogs/1725386083817-158548173.png';
       const blogsWithUrls = blogs.map((blog) => ({
         ...blog.toObject(),
-        featured_image: baseUrl + blog.featured_image,
-        thumb_image: baseUrl + blog.thumb_image,
+        featured_image: this.baseUrl + blog.featured_image,
+        thumb_image: this.baseUrl + blog.thumb_image,
       }));
 
+      return res.status(HttpStatus.OK).json({
+        statusCode: HttpStatus.OK,
+        message: 'Blogs fetched successfully',
+        data: blogsWithUrls,
+        count: countDocuments,
+      });
+    } catch (error) {
+      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+        statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+        message: 'Failed to fetch blogs',
+        error: error.message,
+      });
+    }
+  }
+  @Get('admin-blogs')
+  async getAllBlogsAdmin(
+    @Res() res: Response,
+    @Query('skip') skip: number,
+    @Query('limit') limit: number,
+  ) {
+    try {
+      const blogs = await this.blogService.getAllBlogsAdmin(skip, limit);
+      const blogsWithUrls = blogs.map((blog) => ({
+        ...blog.toObject(),
+        featured_image: this.baseUrl + blog.featured_image,
+        thumb_image: this.baseUrl + blog.thumb_image,
+      }));
+      return res.status(HttpStatus.OK).json({
+        statusCode: HttpStatus.OK,
+        message: 'Blogs fetched successfully',
+        data: blogsWithUrls,
+      });
+    } catch (error) {
+      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+        statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+        message: 'Failed to fetch blogs',
+        error: error.message,
+      });
+    }
+  }
+  @Get('unpublished-blogs')
+  async getUnpublishedBlogs(
+    @Res() res: Response,
+    @Query('skip') skip: number,
+    @Query('limit') limit: number,
+  ) {
+    try {
+      const blogs = await this.blogService.getUnpublishedBlogs(skip, limit);
+      const blogsWithUrls = blogs.map((blog) => ({
+        ...blog.toObject(),
+        featured_image: this.baseUrl + blog.featured_image,
+        thumb_image: this.baseUrl + blog.thumb_image,
+      }));
       return res.status(HttpStatus.OK).json({
         statusCode: HttpStatus.OK,
         message: 'Blogs fetched successfully',
@@ -69,11 +127,10 @@ export class BlogsController {
         });
       }
 
-      const baseUrl = '../../uploads/blogs/'; // This matches the `serveRoot` configuration
       const blogWithUrls = {
         ...blog.toObject(),
-        featured_image: baseUrl + blog.featured_image,
-        thumb_image: baseUrl + blog.thumb_image,
+        featured_image: this.baseUrl + blog.featured_image,
+        thumb_image: this.baseUrl + blog.thumb_image,
       };
 
       console.log(blogWithUrls);
@@ -91,21 +148,30 @@ export class BlogsController {
       });
     }
   }
-
-  @Get('slug/:slug')
+  @Get('get-blog/:slug')
   async getBlogBySlug(@Param('slug') slug: string, @Res() res: Response) {
+    console.log(slug);
+
     try {
       const blog = await this.blogService.getBlogBySlug(slug);
+
       if (!blog) {
         return res.status(HttpStatus.NOT_FOUND).json({
           statusCode: HttpStatus.NOT_FOUND,
           message: 'Blog not found',
         });
       }
+
+      const blogWithUrls = {
+        ...blog.toObject(),
+        featured_image: this.baseUrl + blog.featured_image,
+        thumb_image: this.baseUrl + blog.thumb_image,
+      };
+
       return res.status(HttpStatus.OK).json({
         statusCode: HttpStatus.OK,
         message: 'Blog fetched successfully',
-        data: blog,
+        data: blogWithUrls,
       });
     } catch (error) {
       return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
@@ -159,8 +225,6 @@ export class BlogsController {
       storage: diskStorage({
         destination: 'uploads/blogs',
         filename: (req, file, callback) => {
-          // const uniqueSuffix =
-          //   Date.now() + '-' + Math.round(Math.random() * 1e9);
           callback(null, file.originalname);
         },
       }),
