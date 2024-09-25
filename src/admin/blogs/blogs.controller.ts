@@ -29,7 +29,7 @@ export class BlogsController {
   ) {}
   // baseUrl = 'http://localhost:3000/uploads/blogs/';
   // baseUrl = 'http://partners.makestudy.com/uploads/blogs/';
-  baseUrl = 'https://partners.makestudy.com:8443/uploads/blogs/';
+  baseUrl = 'https://api.partners.makestudy.com:8443/uploads/blogs/';
 
   @Get()
   async getAllBlogs(

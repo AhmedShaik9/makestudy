@@ -11,10 +11,16 @@ import { ProgramCoursesModule } from './admin/program-courses/program-courses.mo
 import { ProgramModule } from './admin/program/program.module';
 import { SlugService } from './libs/common/src/slug/slug.service';
 import { AgentModule } from './agent/agent.module';
+import { CacheModule } from '@nestjs/cache-manager';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
+      isGlobal: true,
+    }),
+    CacheModule.register({
+      ttl: 120000,
+      max: 100,
       isGlobal: true,
     }),
     DatabaseModule,

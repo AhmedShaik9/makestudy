@@ -64,9 +64,11 @@ export class UserController {
   }
   // create passsword
   @Post('create-password')
-  async createPassword(@Body() body: { email: string; password: string }) {
-    const { email, password } = body;
-    return await this.userService.createPassword(email, password);
+  async createPassword(
+    @Body() body: { createUserDto: CreateUserDto; password: string },
+  ) {
+    const { createUserDto, password } = body;
+    return await this.userService.createPassword(createUserDto, password);
   }
   // reset password
   @Post('reset-password')

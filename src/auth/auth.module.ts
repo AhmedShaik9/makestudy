@@ -13,11 +13,14 @@ import { RoleGuard } from '../guards/role.guard';
 import { MailerService } from '../libs/common/src/mail/mailer.service';
 import { OTP, OTPSchema } from '../models/auth/otp.schema';
 import { OtpGeneratorService } from '../libs/common/src/mail/otp-generator.service';
+// import { CacheModule } from '@nestjs/cache-manager';
+
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: Admin.name, schema: AdminSchema }]),
     MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
     MongooseModule.forFeature([{ name: OTP.name, schema: OTPSchema }]),
+    // CacheModule.register(),
     JwtModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
