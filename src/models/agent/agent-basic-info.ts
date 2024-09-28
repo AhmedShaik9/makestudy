@@ -1,36 +1,36 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document, Types } from 'mongoose';
+import mongoose, { Document, Types } from 'mongoose';
 
 @Schema()
 export class AgentBasicInfo extends Document {
-  @Prop({ type: Types.ObjectId, ref: 'User', required: true })
-  agentId: Types.ObjectId;
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true })
+  agentId:mongoose.Schema.Types.ObjectId;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   organizationName: string;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   agencyHeadOfficeAddress: string;
 
   @Prop({ type: Number, default: 1 })
   noOfBranches: number;
 
-  @Prop({ required: true })
+  @Prop({ required: false ,type: String})
   country: string;
 
-  @Prop({ required: true })
+  @Prop({ required: false ,type: String})
   state: string;
 
-  @Prop({ required: true })
+  @Prop({ required: false ,type: String})
   city: string;
 
   @Prop({
     type: {
-      personName: { type: String, required: true },
-      designation: { type: String, required: true },
-      email: { type: String, required: true },
-      countryPhoneCode: { type: String, required: true },
-      contactNo: { type: String, required: true },
+      personName: { type: String, required: false },
+      designation: { type: String, required: false },
+      email: { type: String, required: false },
+      countryPhoneCode: { type: String, required: false },
+      contactNo: { type: String, required: false },
     },
     required: false,
   })
@@ -45,13 +45,13 @@ export class AgentBasicInfo extends Document {
   @Prop({
     type: [
       {
-        beneficiaryName: { type: String, required: true },
-        accountNo: { type: String, required: true },
-        bankName: { type: String, required: true },
-        bankAddress: { type: String, required: true },
+        beneficiaryName: { type: String, required: false },
+        accountNo: { type: String, required: false },
+        bankName: { type: String, required: false },
+        bankAddress: { type: String, required: false },
         branchName: { type: String },
         bankCode: { type: String },
-        swiftCode: { type: String, required: true },
+        swiftCode: { type: String, required: false },
         ifscCode: { type: String }, // Only for India
         panNo: { type: String },
         gstNo: { type: String },

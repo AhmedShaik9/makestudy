@@ -19,6 +19,7 @@ import { OTP } from '../../models/auth/otp.schema';
 import { Admin } from '../../models/auth/admin.schema';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
+import { AgentBasicInfo } from 'src/models/agent/agent-basic-info';
 @Injectable()
 export class UserService {
   private readonly saltRounds = 10;
@@ -32,6 +33,8 @@ export class UserService {
     @InjectModel(OTP.name) private readonly otpModel: Model<OTP>,
     @InjectModel(Admin.name) private adminModel: Model<Admin>,
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
+    @InjectModel(AgentBasicInfo.name)
+    private agentBasicInfoModel: Model<AgentBasicInfo>,
   ) {
     console.log('Cache Manager: ', this.cacheManager);
   }
@@ -111,7 +114,7 @@ export class UserService {
       console.log(createUserDto);
       const createdUser = await this.userModel.create(createUserDto);
       // await createdUser.save();
-console.log(createdUser);
+      console.log(createdUser);
       // Clear cached user data
       // this.userCache.clear();
 
@@ -169,12 +172,36 @@ console.log(createdUser);
       expirationDate.getMinutes() + this.accessTokenExpiresIn,
     );
     const expiresIn = expirationDate.toISOString();
-
-    return {
-      accessToken: this.jwtService.sign(payload),
-      refreshToken: this.jwtService.sign(payload, { expiresIn: '1d' }),
-      expiresIn: expiresIn,
+    const checkAgentInfoFilled = await this.agentBasicInfoModel.findOne({
+      agentId: user._id,
+    });
+    const basicUserData = await this.userModel
+      .findOne({ email })
+      .select('first_name last_name email mobile_no');
+    console.log(basicUserData);
+    const basicUserDataPayload = {
+      first_name: basicUserData.first_name,
+      last_name: basicUserData.last_name,
+      email: basicUserData.email,
+      mobile_no: basicUserData.mobile_no,
+      id: basicUserData._id,
     };
+    if (!checkAgentInfoFilled) {
+      return {
+        accessToken: this.jwtService.sign(payload),
+        refreshToken: this.jwtService.sign(payload, { expiresIn: '1d' }),
+        expiresIn: expiresIn,
+        isAgentInfoFilled: false,
+        basicUserData: this.jwtService.sign(basicUserDataPayload),
+      };
+    } else {
+      return {
+        accessToken: this.jwtService.sign(payload),
+        refreshToken: this.jwtService.sign(payload, { expiresIn: '1d' }),
+        expiresIn: expiresIn,
+        isAgentInfoFilled: true,
+      };
+    }
   }
   validatePassword(plainPassword: string, hashedPassword: string): boolean {
     const hashedPlainPassword = crypto

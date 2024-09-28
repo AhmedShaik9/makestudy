@@ -13,7 +13,7 @@ export class User extends Document {
   @Prop({ required: false })
   company: string;
 
-  @Prop({ default: '' })
+  @Prop({ default: '', type: String })
   user_code: string;
 
   @Prop({ required: false })
