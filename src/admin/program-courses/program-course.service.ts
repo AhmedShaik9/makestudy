@@ -40,7 +40,7 @@ export class ProgramCourseService {
     skip: number,
     limit: number,
   ): Promise<ProgramCourse[]> {
-    return this.programCourseModel.find().skip(skip).limit(limit).exec();
+    return this.programCourseModel.find().skip(skip).limit(limit).lean();
   }
 
   async getProgramCourseById(id: Types.ObjectId): Promise<ProgramCourse> {

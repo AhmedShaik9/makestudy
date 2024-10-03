@@ -27,7 +27,9 @@ import {
 @Controller('program-courses')
 export class ProgramCourseController {
   constructor(private readonly programCourseService: ProgramCourseService) {}
-  baseUrl = '../../uploads/program-course/';
+  baseUrl = 'https://api.partners.makestudy.com:8443/uploads/program-courses/';
+  // baseUrl = 'http://localhost:8080/uploads/program-course/';
+
   @Get()
   async getAllProgramCourses(
     @Res() res: Response,
@@ -38,7 +40,7 @@ export class ProgramCourseController {
       const programCourses =
         await this.programCourseService.getAllProgramCourses(skip, limit);
       const programCoursesWithUrls = programCourses.map((programCourse) => ({
-        ...programCourse,
+        ...programCourse, // toObject removes Mongoose metadata
         courseImage: this.baseUrl + programCourse.courseImage,
       }));
       return res.status(HttpStatus.OK).json({
