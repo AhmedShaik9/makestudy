@@ -1,11 +1,15 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Types } from 'mongoose';
+import mongoose from 'mongoose';
 import { ViewOn } from 'src/types/view-on';
 
 @Schema({ timestamps: true, collection: 'program-course' })
 export class ProgramCourse {
-  @Prop({ required: true, type: Types.ObjectId, ref: 'Program' })
-  programId: Types.ObjectId;
+  @Prop({
+    required: true,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Program',
+  })
+  programId: mongoose.Schema.Types.ObjectId;
   @Prop({ required: false, type: String })
   courseName: string;
 

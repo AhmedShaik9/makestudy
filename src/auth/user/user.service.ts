@@ -228,6 +228,10 @@ export class UserService {
     if (!user) {
       throw new NotFoundException('User not found');
     }
+    await this.otpModel.findOneAndDelete({
+      userEmail: email,
+    });
+
     const otp = this.otpGenerator.generateOtp();
     const subject = 'Password Reset';
     const text = `Dear ${user.first_name},\n\nYour OTP for password reset is ${otp}.`;
