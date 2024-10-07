@@ -13,13 +13,31 @@ export class AgentBasicInfoService {
 
   // Create a new agent basic info
   async create(agentBasicInfoDTO: AgentBasicInfoDTO): Promise<AgentBasicInfo> {
+    // check if agent already exists
+    const agentInfo = await this.agentBasicInfoModel.findOne({
+      agentId: agentBasicInfoDTO.agentId,
+    });
+    if (agentInfo) {
+      throw new NotFoundException(
+        `Agent with ID ${agentBasicInfoDTO.agentId} already exists`,
+      );
+    }
+    agentBasicInfoDTO.verified = 'inactive';
     const newAgentInfo = new this.agentBasicInfoModel(agentBasicInfoDTO);
     return await newAgentInfo.save();
   }
 
   // Get all agent basic info records
   async findAll(): Promise<AgentBasicInfo[]> {
-    return await this.agentBasicInfoModel.find().exec();
+    return await this.agentBasicInfoModel
+      .find()
+      .populate(
+        'agentId',
+        'first_name last_name email mobile_no verified designation',
+      )
+      .select(
+        ' organizationName designation country city  noOfBranches contactPersonInformation.personName contactPersonInformation.contactNo contactPersonInformation.designation verified',
+      );
   }
 
   // Get a single agent basic info record by ID

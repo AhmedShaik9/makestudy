@@ -157,8 +157,8 @@ export class User extends Document {
   @Prop({ default: 0 })
   ab_school_user: number;
 
-  @Prop({ enum: ['Y', 'N'], default: 'N' })
-  verified: 'Y' | 'N';
+  @Prop({ enum: ['active', 'inactive'], default: 'inactive' })
+  verified: 'active' | 'inactive';
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

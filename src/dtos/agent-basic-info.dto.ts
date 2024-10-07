@@ -5,6 +5,7 @@ import {
   IsNumber,
   ValidateNested,
   IsArray,
+  IsEnum,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 
@@ -109,4 +110,8 @@ export class AgentBasicInfoDTO {
   @ValidateNested({ each: true })
   @Type(() => BankDetailDTO)
   bankDetails: BankDetailDTO[];
+
+  @IsOptional()
+  @IsEnum(['active', 'inactive'])
+  verified?: string;
 }

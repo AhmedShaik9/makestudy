@@ -73,6 +73,9 @@ export class AgentBasicInfo extends Document {
       gstNo?: string;
     },
   ];
+
+  @Prop({ enum: ['active', 'inactive'], default: 'inactive' })
+  verified: 'active' | 'inactive';
 }
 
 export const AgentBasicInfoSchema =
