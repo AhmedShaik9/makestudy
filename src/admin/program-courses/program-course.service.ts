@@ -44,7 +44,7 @@ export class ProgramCourseService {
   }
 
   async getProgramCourseById(id: Types.ObjectId): Promise<ProgramCourse> {
-    const programCourse = await this.programCourseModel.findById(id).exec();
+    const programCourse = await this.programCourseModel.findById(id).lean().exec();
     if (!programCourse) {
       throw new NotFoundException(`ProgramCourse with id ${id} not found`);
     }

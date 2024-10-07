@@ -27,7 +27,7 @@ import {
 @Controller('program-courses')
 export class ProgramCourseController {
   constructor(private readonly programCourseService: ProgramCourseService) {}
-  baseUrl = 'https://api.partners.makestudy.com:8443/uploads/program-courses/';
+  baseUrl = 'https://api.partners.makestudy.com:8443/uploads/program-course/';
   // baseUrl = 'http://localhost:8080/uploads/program-course/';
 
   @Get()

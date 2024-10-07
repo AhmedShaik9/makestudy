@@ -1,10 +1,10 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import mongoose, { Document, Types } from 'mongoose';
+import mongoose, { Document } from 'mongoose';
 
 @Schema()
 export class AgentBasicInfo extends Document {
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true })
-  agentId:mongoose.Schema.Types.ObjectId;
+  agentId: mongoose.Schema.Types.ObjectId;
 
   @Prop({ required: false })
   organizationName: string;
@@ -15,13 +15,13 @@ export class AgentBasicInfo extends Document {
   @Prop({ type: Number, default: 1 })
   noOfBranches: number;
 
-  @Prop({ required: false ,type: String})
+  @Prop({ required: false, type: String })
   country: string;
 
-  @Prop({ required: false ,type: String})
+  @Prop({ required: false, type: String })
   state: string;
 
-  @Prop({ required: false ,type: String})
+  @Prop({ required: false, type: String })
   city: string;
 
   @Prop({
