@@ -1,4 +1,5 @@
-import { IsString } from 'class-validator';
+import { IsEnum, IsOptional, IsString } from 'class-validator';
+import { ViewOn } from 'src/types/view-on';
 
 export class CreateProgramDto {
   @IsString()
@@ -12,6 +13,10 @@ export class CreateProgramDto {
 
   @IsString()
   programImage: string;
+
+  @IsOptional()
+  @IsEnum(ViewOn)
+  viewOn?: ViewOn[];
 }
 
 export class UpdateProgramDto {
@@ -26,4 +31,8 @@ export class UpdateProgramDto {
 
   @IsString()
   programImage?: string;
+
+  @IsOptional()
+  @IsEnum(ViewOn)
+  viewOn?: ViewOn[];
 }
