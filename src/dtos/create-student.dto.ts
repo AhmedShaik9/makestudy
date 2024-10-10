@@ -4,9 +4,14 @@ import {
   IsDate,
   IsOptional,
   IsArray,
+  IsNotEmpty,
 } from 'class-validator';
 
 export class CreateStudentDto {
+  @IsString()
+  @IsNotEmpty()
+  agentId: string;
+
   @IsString()
   firstName: string;
 
