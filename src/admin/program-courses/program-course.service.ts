@@ -45,7 +45,7 @@ export class ProgramCourseService {
 
   async getProgramCourseById(id: Types.ObjectId): Promise<ProgramCourse> {
     const programCourse = await this.programCourseModel
-      .findById(id)
+      .findById(id).populate('programId')
       .lean()
       .exec();
     if (!programCourse) {
@@ -104,4 +104,57 @@ export class ProgramCourseService {
 
     return this.programCourseModel.findByIdAndDelete(id).exec();
   }
+
+  // get by filter
+  async getAllData(filter?: any): Promise<any> {
+    const pipeLine = [
+      {
+        $lookup: {
+          from: 'programs',
+          localField: 'programId',
+          foreignField: '_id',
+          as: 'program',
+        },
+      },
+      {
+        $unwind: '$program',
+      },
+      {
+        $match: {
+          ...(filter?.programName
+            ? {
+                'program.programName': filter.programName,
+              }
+            : {}),
+        },
+      },
+      {
+        $facet: {
+          data: [
+            {
+              $project: {
+                _id: 1,
+                courseName: 1,
+                program: 1,
+              },
+            },
+          ],
+          totalCount: [
+            {
+              $count: 'total',
+            },
+          ],
+        },
+      },
+    ];
+  
+    const result = await this.programCourseModel.aggregate(pipeLine);
+    
+    return {
+      data: result[0]?.data || [],
+      totalCount: result[0]?.totalCount[0]?.total || 0,
+    };
+  }
+  
+  
 }

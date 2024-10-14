@@ -29,7 +29,11 @@ export class ProgramCourseController {
   constructor(private readonly programCourseService: ProgramCourseService) {}
   baseUrl = 'https://api.partners.makestudy.com:8443/uploads/program-course/';
   // baseUrl = 'http://localhost:8080/uploads/program-course/';
-
+  @Get('test')
+  async test(@Query() filters?: any) {
+    console.log(filters);
+    return await this.programCourseService.getAllData(filters || {});
+  }
   @Get()
   async getAllProgramCourses(
     @Res() res: Response,
@@ -136,9 +140,7 @@ export class ProgramCourseController {
     @Res() res: Response,
     @UploadedFiles() files: Express.Multer.File[],
   ) {
-    console.log('git here', files);
     try {
-      console.log('came here');
       // console.log(createProgramCourseDto);
       createProgramCourseDto.courseImage = files[0].filename;
       const createdProgramCourse =
@@ -177,6 +179,7 @@ export class ProgramCourseController {
     @Res() res: Response,
     @UploadedFiles() files: Express.Multer.File[],
   ) {
+    console.log(updateProgramCourseDto)
     try {
       if (files && files.length > 0) {
         updateProgramCourseDto.courseImage = files[0].filename;
@@ -198,6 +201,7 @@ export class ProgramCourseController {
         data: updatedProgramCourse,
       });
     } catch (error) {
+      console.log(error.message)
       return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
         statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
         message: 'Failed to update program course',

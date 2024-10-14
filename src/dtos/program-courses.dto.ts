@@ -87,6 +87,9 @@ export class CreateProgramCourseDto {
 
 export class UpdateProgramCourseDto {
   @IsString()
+  programId: string;
+
+  @IsString()
   @IsOptional()
   courseName?: string;
 
