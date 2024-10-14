@@ -133,7 +133,6 @@ export class BlogsController {
         thumb_image: this.baseUrl + blog.thumb_image,
       };
 
-      console.log(blogWithUrls);
 
       return res.status(HttpStatus.OK).json({
         statusCode: HttpStatus.OK,
@@ -150,7 +149,6 @@ export class BlogsController {
   }
   @Get('get-blog/:slug')
   async getBlogBySlug(@Param('slug') slug: string, @Res() res: Response) {
-    console.log(slug);
 
     try {
       const blog = await this.blogService.getBlogBySlug(slug);
@@ -201,7 +199,6 @@ export class BlogsController {
     @UploadedFiles() files: Express.Multer.File[],
   ) {
     try {
-      console.log(files);
       createBlogDto.featured_image = files[0].filename;
       createBlogDto.thumb_image = files[1].filename;
       const createdBlog = await this.blogService.createBlog(createBlogDto);

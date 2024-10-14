@@ -96,9 +96,7 @@ export class ProgramCourseService {
 
     try {
       await fs.unlink(courseImagePath);
-      console.log('Image deleted successfully', courseImagePath);
     } catch (error) {
-      console.error('Error deleting image:', error);
       // Log the error but continue with the deletion of the program course
     }
 

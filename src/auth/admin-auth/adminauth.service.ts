@@ -85,7 +85,6 @@ export class AdminauthService {
 
   async login(username: string, password: string) {
     const admin = await this.adminModel.findOne({ username });
-    console.log(admin);
     if (admin && this.validatePassword(password, admin.password)) {
       const payload = {
         username: admin.username,

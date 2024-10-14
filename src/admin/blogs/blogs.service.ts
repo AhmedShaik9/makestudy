@@ -91,11 +91,6 @@ export class BlogsService {
     try {
       await fs.unlink(featuredImagePath);
       await fs.unlink(thumbImagePath);
-      console.log(
-        'Files deleted successfully',
-        featuredImagePath,
-        thumbImagePath,
-      );
     } catch (error) {
       console.error('Error deleting files:', error);
     }

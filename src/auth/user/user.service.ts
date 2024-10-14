@@ -35,9 +35,7 @@ export class UserService {
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
     @InjectModel(AgentBasicInfo.name)
     private agentBasicInfoModel: Model<AgentBasicInfo>,
-  ) {
-    console.log('Cache Manager: ', this.cacheManager);
-  }
+  ) {}
   async initiateSignup(
     createUserDto: CreateUserDto,
   ): Promise<{ message: string }> {
@@ -96,11 +94,9 @@ export class UserService {
     return { message: 'otp verified' };
   }
   async createPassword(createUserDto: CreateUserDto, password: string) {
-    console.log(createUserDto);
     const checkValidUser = await this.otpModel
       .find()
       .where({ userEmail: createUserDto.email });
-    console.log(checkValidUser);
     if (checkValidUser.length > 0) {
       const hashedPassword = this.hashPassword(password);
       if (!createUserDto) {

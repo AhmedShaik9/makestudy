@@ -31,7 +31,6 @@ export class ProgramCourseController {
   // baseUrl = 'http://localhost:8080/uploads/program-course/';
   @Get('test')
   async test(@Query() filters?: any) {
-    console.log(filters);
     return await this.programCourseService.getAllData(filters || {});
   }
   @Get()
@@ -141,7 +140,6 @@ export class ProgramCourseController {
     @UploadedFiles() files: Express.Multer.File[],
   ) {
     try {
-      // console.log(createProgramCourseDto);
       createProgramCourseDto.courseImage = files[0].filename;
       const createdProgramCourse =
         await this.programCourseService.createProgramCourse(
@@ -153,7 +151,6 @@ export class ProgramCourseController {
         data: createdProgramCourse,
       });
     } catch (error) {
-      console.log(error);
       return res.status(HttpStatus.BAD_REQUEST).json({
         statusCode: HttpStatus.BAD_REQUEST,
         message: 'Failed to create program course',
@@ -179,7 +176,8 @@ export class ProgramCourseController {
     @Res() res: Response,
     @UploadedFiles() files: Express.Multer.File[],
   ) {
-    console.log(updateProgramCourseDto)
+    console.log(files);
+    delete updateProgramCourseDto.courseImage;
     try {
       if (files && files.length > 0) {
         updateProgramCourseDto.courseImage = files[0].filename;
@@ -201,7 +199,6 @@ export class ProgramCourseController {
         data: updatedProgramCourse,
       });
     } catch (error) {
-      console.log(error.message)
       return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
         statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
         message: 'Failed to update program course',
