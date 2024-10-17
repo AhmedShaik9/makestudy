@@ -88,4 +88,10 @@ export class UserController {
       password,
     );
   }
+
+  @Post('refresh-token')
+  async refreshToken(@Body() body: { refreshToken: string }) {
+    const { refreshToken } = body;
+    return await this.userService.refreshToken(refreshToken);
+  }
 }

@@ -107,10 +107,8 @@ export class UserService {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       createUserDto.password = hashedPassword;
-      console.log(createUserDto);
       const createdUser = await this.userModel.create(createUserDto);
       // await createdUser.save();
-      console.log(createdUser);
       // Clear cached user data
       // this.userCache.clear();
 
@@ -174,7 +172,6 @@ export class UserService {
     const basicUserData = await this.userModel
       .findOne({ email })
       .select('first_name last_name email mobile_no');
-    console.log(basicUserData);
     const basicUserDataPayload = {
       first_name: basicUserData.first_name,
       last_name: basicUserData.last_name,
@@ -182,21 +179,41 @@ export class UserService {
       mobile_no: basicUserData.mobile_no,
       id: basicUserData._id,
     };
+    console.log(basicUserDataPayload);
+
     if (!checkAgentInfoFilled) {
       return {
-        accessToken: this.jwtService.sign(payload),
+        accessToken: this.jwtService.sign(payload, { expiresIn: '1m' }),
         refreshToken: this.jwtService.sign(payload, { expiresIn: '1d' }),
         expiresIn: expiresIn,
         isAgentInfoFilled: false,
-        basicUserData: this.jwtService.sign(basicUserDataPayload),
+        basicUserData: this.jwtService.sign(basicUserDataPayload, {
+          expiresIn: '100d',
+        }),
       };
     } else {
       return {
-        accessToken: this.jwtService.sign(payload),
+        accessToken: this.jwtService.sign(payload,{ expiresIn: '1m' }),
         refreshToken: this.jwtService.sign(payload, { expiresIn: '1d' }),
         expiresIn: expiresIn,
         isAgentInfoFilled: true,
+        basicUserData: this.jwtService.sign(basicUserDataPayload, {
+          expiresIn: '100d',
+        }),
       };
+    }
+  }
+  // generate access token using refresh token
+  async refreshToken(refreshToken: string): Promise<any> {
+    try {
+      const payload = this.jwtService.verify(refreshToken);
+      const newPayload = { email: payload.email, sub: payload.sub };
+      return {
+        accessToken: this.jwtService.sign(newPayload),
+        refreshToken: this.jwtService.sign(newPayload, { expiresIn: '1d' }),
+      };
+    } catch (error) {
+      return error;
     }
   }
   validatePassword(plainPassword: string, hashedPassword: string): boolean {
