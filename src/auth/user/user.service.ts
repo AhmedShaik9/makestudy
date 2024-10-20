@@ -107,7 +107,7 @@ export class UserService {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       createUserDto.password = hashedPassword;
-      const createdUser = await this.userModel.create(createUserDto);
+      await this.userModel.create(createUserDto);
       // await createdUser.save();
       // Clear cached user data
       // this.userCache.clear();
@@ -183,7 +183,7 @@ export class UserService {
 
     if (!checkAgentInfoFilled) {
       return {
-        accessToken: this.jwtService.sign(payload, { expiresIn: '1m' }),
+        accessToken: this.jwtService.sign(payload, { expiresIn: '1d' }),
         refreshToken: this.jwtService.sign(payload, { expiresIn: '1d' }),
         expiresIn: expiresIn,
         isAgentInfoFilled: false,
@@ -193,7 +193,7 @@ export class UserService {
       };
     } else {
       return {
-        accessToken: this.jwtService.sign(payload,{ expiresIn: '1m' }),
+        accessToken: this.jwtService.sign(payload, { expiresIn: '1d' }),
         refreshToken: this.jwtService.sign(payload, { expiresIn: '1d' }),
         expiresIn: expiresIn,
         isAgentInfoFilled: true,

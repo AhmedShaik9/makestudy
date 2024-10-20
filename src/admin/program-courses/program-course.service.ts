@@ -40,12 +40,17 @@ export class ProgramCourseService {
     skip: number,
     limit: number,
   ): Promise<ProgramCourse[]> {
-    return this.programCourseModel.find().skip(skip).limit(limit).lean();
+    return this.programCourseModel
+      .find({ published: 'Y' })
+      .skip(skip)
+      .limit(limit)
+      .lean();
   }
 
   async getProgramCourseById(id: Types.ObjectId): Promise<ProgramCourse> {
     const programCourse = await this.programCourseModel
-      .findById(id).populate('programId')
+      .findById(id)
+      .populate('programId')
       .lean()
       .exec();
     if (!programCourse) {
@@ -124,6 +129,7 @@ export class ProgramCourseService {
                 'program.programName': filter.programName,
               }
             : {}),
+          published: 'Y',
         },
       },
       {
@@ -145,14 +151,12 @@ export class ProgramCourseService {
         },
       },
     ];
-  
+
     const result = await this.programCourseModel.aggregate(pipeLine);
-    
+
     return {
       data: result[0]?.data || [],
       totalCount: result[0]?.totalCount[0]?.total || 0,
     };
   }
-  
-  
 }
