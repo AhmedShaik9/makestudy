@@ -67,3 +67,12 @@ export class LoginDto {
   @IsString()
   password: string;
 }
+
+export class ContactUsDto {
+  @IsString()
+  message: string;
+  @IsEmail()
+  email: string;
+  @IsString()
+  name: string;
+}

@@ -9,7 +9,12 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 // import * as bcrypt from 'bcrypt';
 import { User } from '../../models/auth/user.schema';
-import { CreateUserDto, LoginDto, UpdateUserDto } from '../../dtos/user.dto';
+import {
+  ContactUsDto,
+  CreateUserDto,
+  LoginDto,
+  UpdateUserDto,
+} from '../../dtos/user.dto';
 import * as crypto from 'crypto';
 import { JwtService } from '@nestjs/jwt';
 import { MailerService } from '../../libs/common/src/mail/mailer.service';
@@ -287,5 +292,69 @@ export class UserService {
       .findOneAndUpdate({ email }, { password: hashedPassword })
       .exec();
     return { message: 'Password reset successfully' };
+  }
+  async contactUs(contactUsDto: ContactUsDto) {
+    const { message, email, name } = contactUsDto;
+
+    const html = `
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Contact Us</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                background-color: #f9f9f9;
+                margin: 0;
+                padding: 20px;
+            }
+            .container {
+                max-width: 600px;
+                margin: auto;
+                background-color: #fff;
+                border-radius: 8px;
+                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+                padding: 20px;
+            }
+            h1 {
+                color: #333;
+                text-align: center;
+            }
+            p {
+                color: #555;
+                line-height: 1.6;
+            }
+            .footer {
+                text-align: center;
+                margin-top: 20px;
+                font-size: 0.9em;
+                color: #888;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <h1>Contact Us</h1>
+            <p><strong>Name:</strong> ${name}</p>
+            <p><strong>Email:</strong> ${email}</p>
+            <p><strong>Message:</strong></p>
+            <p>${message}</p>
+            <div class="footer">
+                <p>Thank you!</p>
+            </div>
+        </div>
+    </body>
+    </html>
+    `;
+
+    await this.mailerService.sendWelcomeEmail(
+      'agents@makestudy.com',
+      'Contact Us',
+      'Contact Us',
+      html,
+    );
+    return { message: 'Email sent successfully' };
   }
 }

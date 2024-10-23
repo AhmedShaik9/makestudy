@@ -1,5 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import * as nodemailer from 'nodemailer';
+import * as dotenv from 'dotenv';
+
+dotenv.config();
 
 @Injectable()
 export class MailerService {
@@ -10,15 +13,17 @@ export class MailerService {
     html: string,
   ): Promise<void> {
     const transporter = nodemailer.createTransport({
-      service: 'gmail',
+      host: 'smtp-mail.outlook.com',
+      port: 587,
+      secure: false,
       auth: {
-        user: 'shabbersk3@gmail.com',
-        pass: 'mexp paan kqrh dztv',
+        user: 'agents@makestudy.com',
+        pass: 'Mahua@2010',
       },
     });
 
     const mailOptions = {
-      from: 'shabbersk3@gmail.com',
+      from: 'agents@makestudy.com',
       to: email,
       subject: subject,
       text: text,

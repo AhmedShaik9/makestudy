@@ -94,4 +94,11 @@ export class UserController {
     const { refreshToken } = body;
     return await this.userService.refreshToken(refreshToken);
   }
+  @Post('contact-us')
+  async contactUs(
+    @Body() body: { name: string; email: string; message: string },
+  ) {
+    const { name, email, message } = body;
+    return await this.userService.contactUs({ name, email, message });
+  }
 }
