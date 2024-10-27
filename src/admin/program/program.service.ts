@@ -60,6 +60,7 @@ export class ProgramService {
 
   async remove(id: string): Promise<void> {
     const result = await this.programModel.findByIdAndDelete(id).exec();
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const result2 = await this.programCourseModel
       .deleteMany({ programId: id })
       .exec();

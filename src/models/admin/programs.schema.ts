@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { ViewOn } from 'src/types/view-on';
+// import { ViewOn } from 'src/types/view-on';
 
 @Schema({ timestamps: true, collection: 'programs' })
 export class Program {
@@ -18,8 +18,8 @@ export class Program {
   @Prop({ type: String, required: true, unique: true, slug: 'programName' })
   slug: string;
 
-  @Prop({ required: true, type: Array, default: ViewOn.Hide })
-  viewOn: ViewOn[];
+  // @Prop({ required: true, type: Array, default: ViewOn.Hide })
+  // viewOn: ViewOn[];
 }
 
 export const ProgramSchema = SchemaFactory.createForClass(Program);

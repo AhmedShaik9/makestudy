@@ -59,6 +59,32 @@ export class ProgramCourseController {
       });
     }
   }
+  @Get('admin')
+  async getAllProgramCoursesAdmin(
+    @Res() res: Response,
+    @Query('skip') skip: number,
+    @Query('limit') limit: number,
+  ) {
+    try {
+      const programCourses =
+        await this.programCourseService.getAllProgramCoursesAdmin(skip, limit);
+      const programCoursesWithUrls = programCourses.map((programCourse) => ({
+        ...programCourse, // toObject removes Mongoose metadata
+        courseImage: this.baseUrl + programCourse.courseImage,
+      }));
+      return res.status(HttpStatus.OK).json({
+        statusCode: HttpStatus.OK,
+        message: 'ProgramCourses fetched successfully',
+        data: programCoursesWithUrls,
+      });
+    } catch (error) {
+      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+        statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+        message: 'Failed to fetch program courses',
+        error: error.message,
+      });
+    }
+  }
 
   @Get(':id')
   async getProgramCourseById(@Param('id') id: string, @Res() res: Response) {
@@ -176,7 +202,6 @@ export class ProgramCourseController {
     @Res() res: Response,
     @UploadedFiles() files: Express.Multer.File[],
   ) {
-    console.log(files);
     delete updateProgramCourseDto.courseImage;
     try {
       if (files && files.length > 0) {

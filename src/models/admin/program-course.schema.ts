@@ -89,6 +89,9 @@ export class ProgramCourse {
 
   @Prop({ required: true, enum: ViewOn, default: ViewOn.Hide })
   viewOn: ViewOn;
+
+  @Prop({ required: false, type: String })
+  availableIntakes: string;
 }
 
 export const ProgramCourseSchema = SchemaFactory.createForClass(ProgramCourse);

@@ -46,6 +46,16 @@ export class ProgramCourseService {
       .limit(limit)
       .lean();
   }
+  async getAllProgramCoursesAdmin(
+    skip: number,
+    limit: number,
+  ): Promise<ProgramCourse[]> {
+    return this.programCourseModel
+      .find()
+      .skip(skip)
+      .limit(limit)
+      .lean();
+  }
 
   async getProgramCourseById(id: Types.ObjectId): Promise<ProgramCourse> {
     const programCourse = await this.programCourseModel
@@ -74,6 +84,7 @@ export class ProgramCourseService {
     id: Types.ObjectId,
     updateProgramCourseDto: UpdateProgramCourseDto,
   ): Promise<ProgramCourse> {
+    console.log(updateProgramCourseDto);
     const updatedProgramCourse = await this.programCourseModel
       .findByIdAndUpdate(id, updateProgramCourseDto, { new: true })
       .exec();

@@ -60,7 +60,6 @@ export class AdminauthController {
     @Body() body: { username: string; password: string },
     @Req() req: Request,
   ) {
-    console.log(body);
     const result = await this.adminService.login(body.username, body.password);
     if (result) {
       const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;

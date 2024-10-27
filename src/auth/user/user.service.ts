@@ -184,7 +184,6 @@ export class UserService {
       mobile_no: basicUserData.mobile_no,
       id: basicUserData._id,
     };
-    console.log(basicUserDataPayload);
 
     if (!checkAgentInfoFilled) {
       return {

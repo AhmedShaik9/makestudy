@@ -31,7 +31,6 @@ export class MailerService {
     };
     try {
       await transporter.sendMail(mailOptions);
-      console.log('Welcome email sent successfully');
     } catch (error) {
       console.error('Error sending welcome email:', error);
     }
