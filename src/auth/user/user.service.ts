@@ -192,7 +192,7 @@ export class UserService {
         expiresIn: expiresIn,
         isAgentInfoFilled: false,
         basicUserData: this.jwtService.sign(basicUserDataPayload, {
-          expiresIn: '100d',
+          expiresIn: '1d',
         }),
       };
     } else {
@@ -202,7 +202,7 @@ export class UserService {
         expiresIn: expiresIn,
         isAgentInfoFilled: true,
         basicUserData: this.jwtService.sign(basicUserDataPayload, {
-          expiresIn: '100d',
+          expiresIn: '1d',
         }),
       };
     }

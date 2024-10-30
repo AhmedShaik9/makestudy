@@ -25,7 +25,7 @@ export class ProgramService {
   }
 
   async findAll(): Promise<Program[]> {
-    return this.programModel.find().exec();
+    return this.programModel.find().sort({ _id: -1 }).exec();
   }
 
   async findOne(id: string): Promise<Program> {

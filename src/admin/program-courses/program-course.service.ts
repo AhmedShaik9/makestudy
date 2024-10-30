@@ -42,6 +42,7 @@ export class ProgramCourseService {
   ): Promise<ProgramCourse[]> {
     return this.programCourseModel
       .find({ published: 'Y' })
+      .sort({ _id: -1 })
       .skip(skip)
       .limit(limit)
       .lean();
@@ -52,6 +53,7 @@ export class ProgramCourseService {
   ): Promise<ProgramCourse[]> {
     return this.programCourseModel
       .find()
+      .sort({ _id: -1 })
       .skip(skip)
       .limit(limit)
       .lean();
@@ -60,6 +62,7 @@ export class ProgramCourseService {
   async getProgramCourseById(id: Types.ObjectId): Promise<ProgramCourse> {
     const programCourse = await this.programCourseModel
       .findById(id)
+      .sort({ createdAt: -1 })
       .populate('programId')
       .lean()
       .exec();
