@@ -43,5 +43,6 @@ import { AgentBasicInfoSchema } from 'src/models/agent/agent-basic-info';
     MailerService,
     OtpGeneratorService,
   ],
+  exports: [AdminauthService, JwtStrategy, RoleGuard, UserService],
 })
 export class AuthModule {}

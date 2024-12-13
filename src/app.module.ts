@@ -12,6 +12,7 @@ import { ProgramModule } from './admin/program/program.module';
 import { SlugService } from './libs/common/src/slug/slug.service';
 import { AgentModule } from './agent/agent.module';
 import { CacheModule } from '@nestjs/cache-manager';
+import { MakeStudyOnlineModule } from './make-study-online/make-study-online.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { CacheModule } from '@nestjs/cache-manager';
     ProgramCoursesModule,
     ProgramModule,
     AgentModule,
+    MakeStudyOnlineModule,
   ],
   controllers: [AppController],
   providers: [AppService, SlugService],
