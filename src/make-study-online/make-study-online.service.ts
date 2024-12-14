@@ -32,11 +32,11 @@ export class MakeStudyOnlineService {
     }
     const otp = this.otpGenerator.generateOtp();
     const subject = 'Welcome to Our Service!';
-    const text = `Dear ${createUserDto.first_name},\n\nWelcome to our service! Your OTP is ${otp}.`;
+    const text = `Dear ${createUserDto.firstName},\n\nWelcome to our service! Your OTP is ${otp}.`;
     const html = `
         <div style="font-family: Arial, sans-serif; line-height: 1.5;">
           <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR8gFHJGUqaBqmeXxBpdpGkqCMefNxTkwaVOg&s" alt="Welcome Image" style="width: 100%; max-width: 600px;">
-          <h1>Welcome, ${createUserDto.first_name}!</h1>
+          <h1>Welcome, ${createUserDto.firstName}!</h1>
           <p>We are excited to have you on board. Below is your OTP for account access:</p>
           <h2 style="color: #2E86C1;">${otp}</h2>
           <p>Make sure to use this OTP within the next  1 minute.</p>

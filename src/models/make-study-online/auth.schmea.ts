@@ -19,7 +19,7 @@ export class OnlineAuth {
   @Prop({ required: false, type: String })
   status: string;
   @Prop({ required: true, type: String })
-  mobileNumber: string;
+  phoneNumber: string;
   @Prop({ required: true, type: String })
   nationality: string;
 }

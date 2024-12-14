@@ -4,13 +4,13 @@ export class MakeStudyOnlineUser {
   @IsEmail()
   email: string;
   @IsString()
-  first_name: string;
+  firstName: string;
   @IsString()
-  last_name: string;
+  lastName: string;
   @IsString()
   password: string;
   @IsString()
-  mobileNumber: string;
+  phoneNumber: string;
   @IsString()
   nationality: string;
 }
