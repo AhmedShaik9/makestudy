@@ -98,7 +98,7 @@ export class AdminauthService {
       const expiresIn = expirationDate.toISOString();
 
       return {
-        accessToken: this.jwtService.sign(payload),
+        accessToken: this.jwtService.sign(payload,{expiresIn:'1d'}),
         refreshToken: this.jwtService.sign(payload, { expiresIn: '1d' }),
         expiresIn: expiresIn,
       };
